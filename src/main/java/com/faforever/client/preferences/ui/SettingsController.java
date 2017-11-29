@@ -1,6 +1,7 @@
 package com.faforever.client.preferences.ui;
 
 import com.faforever.client.chat.ChatColorMode;
+import com.faforever.client.chat.ChatFormat;
 import com.faforever.client.fx.Controller;
 import com.faforever.client.fx.StringListCell;
 import com.faforever.client.i18n.I18n;
@@ -103,6 +104,7 @@ public class SettingsController implements Controller<Node> {
   public PasswordField newPasswordField;
   public PasswordField confirmPasswordField;
   public ComboBox<TimeInfo> timeComboBox;
+  public ComboBox<ChatFormat> chatComboBox;
   public Label passwordChangeErrorLabel;
   public Label passwordChangeSuccessLabel;
   public ComboBox<UnitDataBaseType> unitDatabaseComboBox;
@@ -207,6 +209,7 @@ public class SettingsController implements Controller<Node> {
       }
     });
     configureTimeSetting(preferences);
+    configureChatSetting(preferences);
     configureLanguageSelection(preferences);
     configureThemeSelection(preferences);
     configureRememberLastTab(preferences);
@@ -267,6 +270,21 @@ public class SettingsController implements Controller<Node> {
     log.debug("A new time format was selected: {}", timeComboBox.getValue());
     Preferences preferences = preferencesService.getPreferences();
     preferences.getChat().setTimeFormat(timeComboBox.getValue());
+    preferencesService.storeInBackground();
+  }
+
+
+  private void configureChatSetting(Preferences preferences) {
+    chatComboBox.setButtonCell(new StringListCell<>(chatFormat -> i18n.get(chatFormat.getI18nKey())));
+    chatComboBox.setCellFactory(param -> new StringListCell<>(chatFormat -> i18n.get(chatFormat.getI18nKey())));
+    chatComboBox.setItems(FXCollections.observableArrayList(ChatFormat.values()));
+    chatComboBox.getSelectionModel().select(preferences.getChat().getChatFormat());
+  }
+
+  public void onChatFormatSelected() {
+    log.debug("A new chat format was selected: {}", chatComboBox.getValue());
+    Preferences preferences = preferencesService.getPreferences();
+    preferences.getChat().setChatFormat(chatComboBox.getValue());
     preferencesService.storeInBackground();
   }
 

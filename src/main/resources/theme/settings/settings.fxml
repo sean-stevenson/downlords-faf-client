@@ -83,6 +83,8 @@
                                                   text="%settings.chat.notifyOnAtMentionOnly"/>
                                         <Label text="%settings.chat.timeFormat"/>
                                         <ComboBox fx:id="timeComboBox" onAction="#onTimeFormatSelected"/>
+                                        <Label text="%settings.chat.chatFormat"/>
+                                        <ComboBox fx:id="chatComboBox" onAction="#onChatFormatSelected"/>
                                     </children>
                                 </VBox>
                             </children>
