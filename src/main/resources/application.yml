@@ -29,10 +29,12 @@ faf-client:
     rackOversUrl: http://90.103.145.211/index.php?settings64=eyJwcmV2aWV3Q29ybmVyIjoiTm9uZSJ9
 
 spring:
+  banner:
+
   profiles:
     active: ${CLIENT_PROFILE:prod}
   main:
-    web-environment: false
+    web-application-type: none
   application:
     name: Downlord's FAF Client
 
@@ -40,6 +42,7 @@ security:
   oauth2:
     client:
       clientAuthenticationScheme: header
+
 logging:
   level:
     org.springframework.beans: warn

@@ -12,6 +12,7 @@ buildscript {
     mavenCentral()
     maven { url 'http://maven.ej-technologies.com/repository' }
     maven { url 'http://repo.spring.io/plugins-release' }
+    maven { url "http://repo.spring.io/libs-milestone" }
   }
 
   dependencies {
@@ -30,6 +31,7 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'propdeps'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
@@ -39,7 +41,7 @@ apply plugin: 'distribution'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-version = '0.7.6-alpha'
+version = '0.8.0-beta.RC2'
 
 compileJava.dependsOn(processResources)
 processResources {
@@ -250,6 +252,10 @@ repositories {
   jcenter()
   maven { url "https://jitpack.io" }
   maven { url "http://dl.bintray.com/typesafe/maven-releases" }
+  maven { url "http://repo.spring.io/libs-milestone" }
+  // TODO remove as soon as spring-security-oauth2-autoconfigure has been released
+  // See https://github.com/spring-projects/spring-security-oauth2-boot/issues/4
+  maven { url "http://repo.spring.io/libs-snapshot" }
 }
 
 jacoco {
@@ -266,15 +272,24 @@ dependencies {
   compile("org.springframework.boot:spring-boot-starter")
   compile("org.springframework.boot:spring-boot-starter-cache")
   compile("org.springframework.boot:spring-boot-starter-logging")
-  compile("org.springframework.security.oauth:spring-security-oauth2")
+  compile("org.springframework.boot:spring-boot-starter-json")
+  compile("org.springframework.boot:spring-boot-starter-security")
   compile("org.springframework:spring-web")
+  // TODO remove version as soon as spring-security-oauth2-autoconfigure has been released and version is managed
+  // See https://github.com/spring-projects/spring-security-oauth2-boot/issues/4
+  compile("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:2.0.0.BUILD-SNAPSHOT")
+
+  // TODO remove once migrated to Spring Boot 2.0.0. See https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.0-Migration-Guide#before-you-start
+  compile("org.springframework.boot:spring-boot-properties-migrator")
 
   compile("com.github.FAForever:faf-java-commons:${fafCommonsVersion}")
-  compile("com.google.code.gson:gson:2.3.1")
+  // TODO Use Jackson instead
+  compile("com.google.code.gson:gson:2.8.2")
   compile("org.pircbotx:pircbotx:2.1") {
     exclude module: 'guava'
   }
-  compile("com.google.guava:guava:18.0")
+  compile("com.github.ben-manes.caffeine:caffeine")
+  compile("com.google.guava:guava:24.0-jre")
   compile("org.apache.commons:commons-compress:1.9")
   compile("net.java.dev.jna:jna:4.2.1")
   compile("net.java.dev.jna:jna-platform:4.2.1")
@@ -290,11 +305,11 @@ dependencies {
   compile("commons-validator:commons-validator:1.5.1")
   compile("com.github.micheljung:JJsonRpc:01a7fba5f4")
   compile("javax.inject:javax.inject:1")
-  compile("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonDatatypeJsr310Version}")
   compile("org.projectlombok:lombok:${lombokVersion}")
   compile("com.github.rutledgepaulv:q-builders:${qBuildersVersion}")
   compile("com.github.nsp:JSkills:${jSkillsVersion}")
   compile("com.github.jasminb:jsonapi-converter:${jsonapiConverterVersion}")
+  compile("org.opentelecoms.ice:ice4j-fork:1.0+f.4")
   compile("com.github.Brutus5000:BiReUS-JCL:${bireusVersion}")
   compile("com.github.micheljung:i4jruntime:${i4jruntimeVersion}")
 

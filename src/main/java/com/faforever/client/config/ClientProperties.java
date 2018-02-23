@@ -2,11 +2,13 @@ package com.faforever.client.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.Duration;
 
 @Data
 @ConfigurationProperties(prefix = "faf-client", ignoreUnknownFields = false)
+@Validated
 public class ClientProperties {
 
   private String mainWindowTitle = "Downlord's FAF Client";
