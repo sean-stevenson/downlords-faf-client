@@ -38,8 +38,8 @@ apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'distribution'
 
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_1_9
+targetCompatibility = JavaVersion.VERSION_1_9
 
 version = '0.8.0-beta.RC2'
 
@@ -262,12 +262,6 @@ jacoco {
   toolVersion = "0.7.5.201505241946"
 }
 
-dependencyManagement {
-  dependencies {
-    dependency "org.mockito:mockito-core:${mockitoVersion}"
-  }
-}
-
 dependencies {
   compile("org.springframework.boot:spring-boot-starter")
   compile("org.springframework.boot:spring-boot-starter-cache")
@@ -310,7 +304,7 @@ dependencies {
   compile("com.github.nsp:JSkills:${jSkillsVersion}")
   compile("com.github.jasminb:jsonapi-converter:${jsonapiConverterVersion}")
   compile("org.opentelecoms.ice:ice4j-fork:1.0+f.4")
-  compile("com.github.Brutus5000:BiReUS-JCL:${bireusVersion}")
+//  compile("com.github.Brutus5000:BiReUS-JCL:${bireusVersion}")
   compile("com.github.micheljung:i4jruntime:${i4jruntimeVersion}")
 
   testCompile 'junit:junit:4.11'
