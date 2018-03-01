@@ -26,10 +26,12 @@ public class ForgedAllianceServiceImpl implements ForgedAllianceService {
   private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   private final PreferencesService preferencesService;
+  private final LogFileService logFileService;
 
   @Inject
-  public ForgedAllianceServiceImpl(PreferencesService preferencesService) {
+  public ForgedAllianceServiceImpl(PreferencesService preferencesService, LogFileService logFileService) {
     this.preferencesService = preferencesService;
+    this.logFileService = logFileService;
   }
 
   @Override
@@ -61,7 +63,7 @@ public class ForgedAllianceServiceImpl implements ForgedAllianceService {
         .mean(mean)
         .username(currentPlayer.getUsername())
         .additionalArgs(additionalArgs)
-        .logFile(preferencesService.getFafLogDirectory().resolve("game.log"))
+        .logFile(logFileService.getPathForLog(false,uid))
         .localGpgPort(gpgPort)
         .localReplayPort(localReplayPort)
         .rehost(rehost)
@@ -78,7 +80,7 @@ public class ForgedAllianceServiceImpl implements ForgedAllianceService {
         .executable(executable)
         .replayFile(path)
         .replayId(replayId)
-        .logFile(preferencesService.getFafLogDirectory().resolve("game.log"))
+        .logFile(logFileService.getPathForLog(true,replayId))
         .build();
 
     return launch(executable, launchCommand);
@@ -92,7 +94,7 @@ public class ForgedAllianceServiceImpl implements ForgedAllianceService {
         .executable(executable)
         .replayUri(replayUri)
         .replayId(replayId)
-        .logFile(preferencesService.getFafLogDirectory().resolve("replay.log"))
+        .logFile(logFileService.getPathForLog(true,replayId))
         .username(currentPlayer.getUsername())
         .build();
 
