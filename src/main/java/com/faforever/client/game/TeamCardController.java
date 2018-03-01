@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -58,13 +59,13 @@ public class TeamCardController implements Controller<Node> {
           .collect(Collectors.toList());
 
       TeamCardController teamCardController = uiService.loadFxml("theme/team_card.fxml");
-      teamCardController.setPlayersInTeam(entry.getKey(), players,
+      teamCardController.setPlayersInTeam(entry.getKey(), players, Optional.empty(),
           player -> new Rating(player.getGlobalRatingMean(), player.getGlobalRatingDeviation()), RatingType.ROUNDED);
       teamsPane.getChildren().add(teamCardController.getRoot());
     }
   }
 
-  public void setPlayersInTeam(String team, List<Player> playerList, Function<Player, Rating> ratingProvider, RatingType ratingType) {
+  public void setPlayersInTeam(String team, List<Player> playerList, Optional<Map<Integer, Faction>> factionByPlayer, Function<Player, Rating> ratingProvider, RatingType ratingType) {
     int totalRating = 0;
     for (Player player : playerList) {
       // If the server wasn't bugged, this would never be the case.
@@ -82,7 +83,14 @@ public class TeamCardController implements Controller<Node> {
 
       RatingChangeLabelController ratingChangeLabelController = uiService.loadFxml("theme/rating_change_label.fxml");
       ratingChangeControllersByPlayerId.put(player.getId(), ratingChangeLabelController);
-      HBox container = new HBox(playerCardTooltipController.getRoot(), ratingChangeLabelController.getRoot());
+      HBox container = new HBox();
+      if (factionByPlayer.isPresent() && factionByPlayer.get().containsKey(player.getId())) {
+        FactionCardTooltipController controller = uiService.loadFxml("theme/faction_card_tooltip.fxml");
+        controller.setFaction(factionByPlayer.get().get(player.getId()));
+        container.getChildren().add(controller.getRoot());
+      }
+      container.getChildren().addAll(playerCardTooltipController.getRoot(), ratingChangeLabelController.getRoot());
+      totalRating += RatingUtil.getRating(ratingProvider.apply(player));
       teamPane.getChildren().add(container);
     }
 

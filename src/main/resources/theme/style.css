@@ -326,6 +326,27 @@
   -fx-background: -card-color;
 }
 
+.card-icon {
+  -fx-font-family: 'dfc-icons';
+  -fx-font-size: 18
+}
+
+.card-aeon {
+  -fx-text-fill: -swatch-green-500 !important;
+}
+
+.card-cybran {
+  -fx-text-fill: -swatch-red-500 !important;
+}
+
+.card-uef {
+  -fx-text-fill: -swatch-blue-500 !important;
+}
+
+.card-seraphim {
+  -fx-text-fill: -swatch-amber-500 !important;
+}
+
 /*******************************************************************************
  *                                                                             *
  * Button, ToggleButton & MenuButton                                           *

@@ -6,6 +6,7 @@ import com.faforever.client.fx.Controller;
 import com.faforever.client.fx.JavaFxUtil;
 import com.faforever.client.fx.StringCell;
 import com.faforever.client.game.RatingType;
+import com.faforever.client.game.Faction;
 import com.faforever.client.game.TeamCardController;
 import com.faforever.client.i18n.I18n;
 import com.faforever.client.map.MapBean;
@@ -51,10 +52,10 @@ import java.time.Duration;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -268,9 +269,12 @@ public class ReplayDetailController implements Controller<Node> {
       showRatingChangeButton.setDisable(true);
       showRatingChangeButton.setText(i18n.get("game.notRatedYet"));
     }
-    Map<Integer, PlayerStats> statsByPlayerId = teams.values().stream()
-        .flatMap(Collection::stream)
-        .collect(Collectors.toMap(PlayerStats::getPlayerId, Function.identity()));
+    Map<Integer, PlayerStats> statsByPlayerId = new HashMap<>();
+    Map<Integer, Faction> factionByPlayer = new HashMap<>();
+    teams.values().stream().flatMap(Collection::stream).forEach((element) -> {
+      statsByPlayerId.put(element.getPlayerId(), element);
+      factionByPlayer.put(element.getPlayerId(), element.getFaction());
+    });
 
     Platform.runLater(() -> teams.forEach((team, value) -> {
       List<Integer> playerIds = value.stream()
@@ -281,7 +285,7 @@ public class ReplayDetailController implements Controller<Node> {
       TeamCardController controller = uiService.loadFxml("theme/team_card.fxml");
       teamCardControllers.add(controller);
       playerService.getPlayersByIds(playerIds)
-          .thenAccept(players -> controller.setPlayersInTeam(team, players, player -> {
+          .thenAccept(players -> controller.setPlayersInTeam(team, players, Optional.ofNullable(factionByPlayer), player -> {
             PlayerStats playerStats = statsByPlayerId.get(player.getId());
             return new Rating(playerStats.getBeforeMean(), playerStats.getBeforeDeviation());
           }, RatingType.EXACT));
