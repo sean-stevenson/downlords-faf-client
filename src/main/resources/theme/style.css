@@ -328,7 +328,8 @@
 
 .card-icon {
   -fx-font-family: 'dfc-icons';
-  -fx-font-size: 18
+  -fx-font-size: 18;
+  -fx-min-width: 18px;
 }
 
 .card-aeon {
@@ -345,6 +346,11 @@
 
 .card-seraphim {
   -fx-text-fill: -swatch-amber-500 !important;
+}
+
+.card-nomad {
+  -fx-font-size: 14;
+  -fx-text-fill: -swatch-orange-500 !important;
 }
 
 /*******************************************************************************

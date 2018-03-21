@@ -32,7 +32,7 @@ public class FactionCardTooltipController implements Controller<Node> {
         factionLabel.getStyleClass().add("card-uef");
         break;
       case NOMAD:
-        factionLabel.setText("N");
+        factionLabel.setText("\uE907");
         factionLabel.getStyleClass().add("card-nomad");
         break;
       default:

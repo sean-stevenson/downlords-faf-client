@@ -90,7 +90,6 @@ public class TeamCardController implements Controller<Node> {
         container.getChildren().add(controller.getRoot());
       }
       container.getChildren().addAll(playerCardTooltipController.getRoot(), ratingChangeLabelController.getRoot());
-      totalRating += RatingUtil.getRating(ratingProvider.apply(player));
       teamPane.getChildren().add(container);
     }
 
