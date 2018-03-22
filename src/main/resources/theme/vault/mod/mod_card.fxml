@@ -26,6 +26,8 @@
       <Label fx:id="nameLabel" alignment="TOP_LEFT" maxWidth="1.7976931348623157E308"
              text="Long text to test whether it's being wrapped" wrapText="true" GridPane.columnSpan="2147483647"
              GridPane.rowIndex="1" GridPane.valignment="TOP"/>
+      <Label fx:id="installedLabel" styleClass="icon" text="" wrapText="true" GridPane.columnIndex="2"
+             GridPane.rowIndex="2"/>
       <Label fx:id="authorLabel" maxWidth="1.7976931348623157E308" minWidth="0.0" styleClass="secondary" text="Label"
              wrapText="true" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" GridPane.valignment="TOP"/>
       <Label fx:id="numberOfReviewsLabel" text="12345" GridPane.columnIndex="1" GridPane.columnSpan="2147483647"

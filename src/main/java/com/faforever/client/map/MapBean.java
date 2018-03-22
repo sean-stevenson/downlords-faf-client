@@ -216,6 +216,11 @@ public class MapBean implements Comparable<MapBean> {
     return getDisplayName().compareTo(o.getDisplayName());
   }
 
+  @Override
+  public boolean equals(@NotNull Object o) {
+    return o instanceof MapBean && ((MapBean) o).compareTo(this) == 0;
+  }
+
   public String getDisplayName() {
     return displayName.get();
   }

@@ -35,6 +35,7 @@ public class ModCardController implements Controller<Node> {
   public Label createdLabel;
   public Label numberOfReviewsLabel;
   public Label typeLabel;
+  public Label installedLabel;
   private ModVersion modVersion;
   private Consumer<ModVersion> onOpenDetailListener;
   private ListChangeListener<ModVersion> installStatusChangeListener;
@@ -78,7 +79,7 @@ public class ModCardController implements Controller<Node> {
   }
 
   private void setInstalled(boolean installed) {
-    //TODO:IMPLEMENT ISSUE #670
+    installedLabel.setVisible(installed);
   }
 
   public void setModVersion(ModVersion modVersion) {
@@ -91,6 +92,7 @@ public class ModCardController implements Controller<Node> {
 
     ObservableList<ModVersion> installedModVersions = modService.getInstalledModVersions();
     synchronized (installedModVersions) {
+      setInstalled(installedModVersions.contains(modVersion));
       installedModVersions.addListener(new WeakListChangeListener<>(installStatusChangeListener));
     }
     ObservableList<Review> reviews = modVersion.getReviews();
