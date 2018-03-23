@@ -83,6 +83,9 @@
                                                   text="%settings.chat.notifyOnAtMentionOnly"/>
                                         <Label text="%settings.chat.timeFormat"/>
                                         <ComboBox fx:id="timeComboBox" onAction="#onTimeFormatSelected"/>
+                                        <Button fx:id="autoJoinChannelsButton"
+                                                onAction="#onAutoJoinChannelsButtonClicked" mnemonicParsing="false"
+                                                text="%settings.chat.autoJoinChannelList"/>
                                     </children>
                                 </VBox>
                             </children>

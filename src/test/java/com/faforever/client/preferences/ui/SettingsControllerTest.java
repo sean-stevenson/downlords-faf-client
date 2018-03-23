@@ -12,6 +12,7 @@ import com.faforever.client.theme.UiService;
 import com.faforever.client.user.UserService;
 import com.google.common.eventbus.EventBus;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.layout.Pane;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -38,6 +39,8 @@ public class SettingsControllerTest extends AbstractPlainJavaFxTest {
   private I18n i18n;
   @Mock
   private NotificationService notificationService;
+  @Mock
+  private AutoJoinChannelsController autoJoinChannelsController;
   private Preferences preferences;
 
   @Before
@@ -45,6 +48,8 @@ public class SettingsControllerTest extends AbstractPlainJavaFxTest {
     preferences = new Preferences();
     when(preferenceService.getPreferences()).thenReturn(preferences);
     when(uiService.currentThemeProperty()).thenReturn(new SimpleObjectProperty<>());
+    when(uiService.loadFxml("theme/settings/auto_join_channels.fxml")).thenReturn(autoJoinChannelsController);
+    when(autoJoinChannelsController.getRoot()).thenReturn(new Pane());
 
     instance = new SettingsController(userService, preferenceService, uiService, i18n, eventBus, notificationService);
     loadFxml("theme/settings/settings.fxml", param -> instance);

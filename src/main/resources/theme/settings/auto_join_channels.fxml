@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="autoJoinChannelsSettingsRoot"
+          xmlns="http://javafx.com/javafx/8.0.151"
+          fx:controller="com.faforever.client.preferences.ui.AutoJoinChannelsController">
+
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0"/>
+        <ColumnConstraints/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints vgrow="SOMETIMES"/>
+        <RowConstraints vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <TextField fx:id="channelTextField" promptText="%settings.chat.autoJoinChannelPrompt"/>
+        <Button fx:id="addChannelButton" mnemonicParsing="false" onAction="#onAddChannelButtonPressed"
+                text="%settings.chat.addAutoJoinChannel"
+                GridPane.columnIndex="1"/>
+        <ScrollPane maxHeight="150.0" GridPane.rowIndex="1" GridPane.columnSpan="2" fitToWidth="true"
+                    fitToHeight="true">
+            <content>
+                <ListView fx:id="channelListView" onMouseClicked="#onChannelSelected"/>
+            </content>
+        </ScrollPane>
+
+    </children>
+</GridPane>
