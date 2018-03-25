@@ -34,6 +34,7 @@ import com.faforever.client.remote.domain.IceServersServerMessage.IceServer;
 import com.faforever.client.remote.domain.LoginMessage;
 import com.faforever.client.remote.domain.ServerMessage;
 import com.faforever.client.replay.Replay;
+import com.faforever.client.tutorial.Tutorial;
 import com.faforever.client.vault.review.Review;
 import com.faforever.client.vault.search.SearchController.SearchConfig;
 import com.faforever.client.vault.search.SearchController.SortConfig;
@@ -205,6 +206,14 @@ public class FafServiceImpl implements FafService {
     return CompletableFuture.completedFuture(fafApiAccessor.getCoopMissions().stream()
         .map(CoopMission::fromCoopInfo)
         .collect(toList()));
+  }
+
+  @Override
+  @Async
+  public CompletableFuture<List<Tutorial>> getTutorials() {
+    return CompletableFuture.completedFuture(fafApiAccessor.getTutorials().stream()
+        .map(Tutorial::fromDto)
+        .collect(Collectors.toList()));
   }
 
   @Override

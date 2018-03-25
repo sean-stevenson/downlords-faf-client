@@ -23,6 +23,7 @@ import com.faforever.client.remote.domain.IceServersServerMessage.IceServer;
 import com.faforever.client.remote.domain.LoginMessage;
 import com.faforever.client.remote.domain.ServerMessage;
 import com.faforever.client.replay.Replay;
+import com.faforever.client.tutorial.Tutorial;
 import com.faforever.client.vault.review.Review;
 import com.faforever.client.vault.search.SearchController.SearchConfig;
 import com.faforever.client.vault.search.SearchController.SortConfig;
@@ -86,6 +87,8 @@ public interface FafService {
   CompletableFuture<List<MapBean>> getNewestMaps(int count, int page);
 
   CompletableFuture<List<CoopMission>> getCoopMaps();
+
+  CompletableFuture<List<Tutorial>> getTutorials();
 
   CompletableFuture<List<AvatarBean>> getAvailableAvatars();
 

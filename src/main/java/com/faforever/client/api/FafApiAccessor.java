@@ -19,6 +19,7 @@ import com.faforever.client.api.dto.ModVersion;
 import com.faforever.client.api.dto.ModVersionReview;
 import com.faforever.client.api.dto.PlayerAchievement;
 import com.faforever.client.api.dto.PlayerEvent;
+import com.faforever.client.api.dto.Tutorial;
 import com.faforever.client.game.KnownFeaturedMod;
 import com.faforever.client.mod.FeaturedMod;
 import com.faforever.client.vault.search.SearchController.SearchConfig;
@@ -105,6 +106,8 @@ public interface FafApiAccessor {
   void updateMapVersionReview(MapVersionReview review);
 
   void deleteGameReview(String id);
+
+  List<Tutorial> getTutorials();
 
   Optional<Clan> getClanByTag(String tag);
 
