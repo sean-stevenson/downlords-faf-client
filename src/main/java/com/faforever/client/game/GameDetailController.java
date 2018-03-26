@@ -9,7 +9,7 @@ import com.faforever.client.mod.ModService;
 import com.faforever.client.player.PlayerService;
 import com.faforever.client.theme.UiService;
 import com.faforever.client.util.ProgrammingError;
-import javafx.beans.InvalidationListener;
+import javafx.beans.WeakInvalidationListener;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -53,8 +53,8 @@ public class GameDetailController implements Controller<Pane> {
   public Node joinButton;
   public Node watchButton;
   private Game game;
-  private InvalidationListener teamsInvalidationListener;
-  private InvalidationListener gameStatusInvalidationListener;
+  private final WeakInvalidationListener teamsInvalidationListener;
+  private final WeakInvalidationListener gameStatusInvalidationListener;
 
   public GameDetailController(I18n i18n, MapService mapService, ModService modService, PlayerService playerService,
                               UiService uiService, JoinGameHelper joinGameHelper) {
@@ -65,7 +65,8 @@ public class GameDetailController implements Controller<Pane> {
     this.uiService = uiService;
     this.joinGameHelper = joinGameHelper;
 
-    gameStatusInvalidationListener = observable -> onGameStatusChanged();
+    gameStatusInvalidationListener = new WeakInvalidationListener(observable -> onGameStatusChanged());
+    teamsInvalidationListener = new WeakInvalidationListener(observable -> createTeams(game.getTeams(), game));
   }
 
   public void initialize() {
@@ -118,13 +119,13 @@ public class GameDetailController implements Controller<Pane> {
       return StringUtils.defaultString(fullName);
     }, newGame.featuredModProperty()));
 
-    if (this.game != null && teamsInvalidationListener != null) {
+    if (this.game != null) {
       this.game.getTeams().removeListener(teamsInvalidationListener);
+      this.game.statusProperty().removeListener(gameStatusInvalidationListener);
     }
 
     this.game = newGame;
 
-    teamsInvalidationListener = observable -> createTeams(newGame.getTeams(), newGame);
     teamsInvalidationListener.invalidated(newGame.getTeams());
     newGame.getTeams().addListener(teamsInvalidationListener);
     newGame.statusProperty().addListener(gameStatusInvalidationListener);
