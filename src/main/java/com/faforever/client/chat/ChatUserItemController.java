@@ -16,7 +16,6 @@ import com.faforever.client.preferences.ChatPrefs;
 import com.faforever.client.preferences.PreferencesService;
 import com.faforever.client.theme.UiService;
 import com.faforever.client.ui.StageHolder;
-import com.faforever.client.util.TimeService;
 import com.google.common.eventbus.EventBus;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -78,7 +77,6 @@ public class ChatUserItemController implements Controller<Node> {
   private final PlayerService playerService;
   private final ClanService clanService;
   private final PlatformService platformService;
-  private final TimeService timeService;
   public Pane chatUserItemRoot;
   public ImageView countryImageView;
   public ImageView avatarImageView;
@@ -103,7 +101,7 @@ public class ChatUserItemController implements Controller<Node> {
                                 I18n i18n, UiService uiService,
                                 JoinGameHelper joinGameHelper, EventBus eventBus,
                                 ClanService clanService, PlayerService playerService,
-                                PlatformService platformService, TimeService timeService) {
+                                PlatformService platformService) {
     this.platformService = platformService;
     this.preferencesService = preferencesService;
     this.avatarService = avatarService;
@@ -115,7 +113,6 @@ public class ChatUserItemController implements Controller<Node> {
     this.uiService = uiService;
     this.joinGameHelper = joinGameHelper;
     this.eventBus = eventBus;
-    this.timeService = timeService;
   }
 
   public void initialize() {
@@ -316,11 +313,9 @@ public class ChatUserItemController implements Controller<Node> {
     Tooltip userTooltip = new Tooltip();
     usernameLabel.setTooltip(userTooltip);
     userTooltip.textProperty().bind(Bindings.createStringBinding(
-        () -> String.format("%s\n%s",
-            i18n.get("userInfo.ratingFormat", getGlobalRating(player), getLeaderboardRating(player)),
-            i18n.get("userInfo.idleTimeFormat", timeService.timeAgo(player.getIdleSince()))),
+        () -> i18n.get("userInfo.ratingFormat", getGlobalRating(player), getLeaderboardRating(player)),
         player.leaderboardRatingMeanProperty(), player.leaderboardRatingDeviationProperty(),
-        player.globalRatingMeanProperty(), player.globalRatingDeviationProperty(), player.idleSinceProperty()
+        player.globalRatingMeanProperty(), player.globalRatingDeviationProperty()
     ));
   }
 
