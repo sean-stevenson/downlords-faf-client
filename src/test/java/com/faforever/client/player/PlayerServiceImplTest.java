@@ -1,15 +1,20 @@
 package com.faforever.client.player;
 
+import com.faforever.client.i18n.I18n;
+import com.faforever.client.notification.NotificationService;
+import com.faforever.client.notification.TransientNotification;
 import com.faforever.client.remote.FafService;
 import com.faforever.client.remote.domain.PlayersMessage;
 import com.faforever.client.remote.domain.SocialMessage;
 import com.faforever.client.user.UserService;
 import com.faforever.client.user.event.LoginSuccessEvent;
+import com.faforever.client.util.IdenticonUtil;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import javafx.beans.property.SimpleObjectProperty;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.util.ReflectionUtils;
@@ -43,6 +48,10 @@ public class PlayerServiceImplTest {
   private UserService userService;
   @Mock
   private EventBus eventBus;
+  @Mock
+  private NotificationService notificationService;
+  @Mock
+  private I18n i18n;
 
   private PlayerServiceImpl instance;
 
@@ -50,9 +59,14 @@ public class PlayerServiceImplTest {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
 
-    instance = new PlayerServiceImpl(fafService, userService, eventBus);
+    instance = new PlayerServiceImpl(fafService, userService, eventBus, notificationService, i18n);
 
     when(fafService.connectionStateProperty()).thenReturn(new SimpleObjectProperty<>());
+
+    when(i18n.get(eq("userInfo.ratingUpdate.global.title"))).thenReturn("userInfo.ratingUpdate.global.title");
+    when(i18n.get(eq("userInfo.ratingUpdate.global.message"), )).thenReturn("userInfo.ratingUpdate.global.message");
+    when(i18n.get(eq("userInfo.ratingUpdate.ladder.title"))).thenReturn("userInfo.ratingUpdate.ladder.title");
+    when(i18n.get(eq("userInfo.ratingUpdate.ladder.message"))).thenReturn("userInfo.ratingUpdate.ladder.message");
 
     instance.postConstruct();
   }
@@ -202,6 +216,30 @@ public class PlayerServiceImplTest {
 
     assertThat(currentPlayer.getUsername(), is("junit"));
     assertThat(currentPlayer.getId(), is(1));
+  }
+
+  @Test
+  public void testCheckForRatingUpdateNotification() {
+    Player actualPlayer = PlayerBuilder.create("junit")
+        .leaderboardRatingMean(10)
+        .leaderboardRatingDeviation(5)
+        .globalRatingMean(100)
+        .globalRatingDeviation(50)
+        .id(20)
+        .get();
+
+    com.faforever.client.remote.domain.Player newPlayer = new com.faforever.client.remote.domain.Player();
+    newPlayer.setGlobalRating(new float[]{120, 50});
+    newPlayer.setLadderRating(new float[]{10, 5});
+    newPlayer.setId(20);
+
+    instance.checkForRatingUpdateNotification(actualPlayer, newPlayer);
+
+    ArgumentCaptor<TransientNotification> captor = ArgumentCaptor.forClass(TransientNotification.class);
+    verify(notificationService).addNotification(captor.capture());
+    TransientNotification notification = captor.getValue();
+    assertEquals(notification.getImage(), IdenticonUtil.createIdenticon(20));
+    assertEquals(notific);
   }
 
   @Test

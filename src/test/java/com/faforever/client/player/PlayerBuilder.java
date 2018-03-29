@@ -60,6 +60,16 @@ public class PlayerBuilder {
     return this;
   }
 
+  public PlayerBuilder globalRatingMean(float mean) {
+    player.setGlobalRatingMean(mean);
+    return this;
+  }
+
+  public PlayerBuilder globalRatingDeviation(float deviation) {
+    player.setGlobalRatingDeviation(deviation);
+    return this;
+  }
+
   public PlayerBuilder game(Game game) {
     player.setGame(game);
     return this;

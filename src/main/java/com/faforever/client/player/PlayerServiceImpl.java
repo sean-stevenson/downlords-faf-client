@@ -8,6 +8,10 @@ import com.faforever.client.game.Game;
 import com.faforever.client.game.GameAddedEvent;
 import com.faforever.client.game.GameRemovedEvent;
 import com.faforever.client.game.GameUpdatedEvent;
+import com.faforever.client.i18n.I18n;
+import com.faforever.client.main.event.ShowProfileEvent;
+import com.faforever.client.notification.NotificationService;
+import com.faforever.client.notification.TransientNotification;
 import com.faforever.client.player.event.FriendJoinedGameEvent;
 import com.faforever.client.remote.FafService;
 import com.faforever.client.remote.domain.GameStatus;
@@ -16,6 +20,9 @@ import com.faforever.client.remote.domain.SocialMessage;
 import com.faforever.client.user.UserService;
 import com.faforever.client.user.event.LoginSuccessEvent;
 import com.faforever.client.util.Assert;
+import com.faforever.client.util.IdenticonUtil;
+import com.faforever.client.util.RatingUtil;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import javafx.beans.property.ObjectProperty;
@@ -54,12 +61,16 @@ public class PlayerServiceImpl implements PlayerService {
   private final FafService fafService;
   private final UserService userService;
   private final EventBus eventBus;
+  private final NotificationService notificationService;
+  private final I18n i18n;
 
   @Inject
-  public PlayerServiceImpl(FafService fafService, UserService userService, EventBus eventBus) {
+  public PlayerServiceImpl(FafService fafService, UserService userService, EventBus eventBus, NotificationService notificationService, I18n i18n) {
     this.fafService = fafService;
     this.userService = userService;
     this.eventBus = eventBus;
+    this.notificationService = notificationService;
+    this.i18n = i18n;
 
     playersByName = FXCollections.observableHashMap();
     playersById = FXCollections.observableHashMap();
@@ -273,6 +284,9 @@ public class PlayerServiceImpl implements PlayerService {
   private void onPlayerInfo(com.faforever.client.remote.domain.Player player) {
     if (player.getLogin().equalsIgnoreCase(userService.getUsername())) {
       Player playerInfoBean = getCurrentPlayer().orElseThrow(() -> new IllegalStateException("Player has not been set"));
+
+      checkForRatingUpdateNotification(playerInfoBean, player);
+
       playerInfoBean.updateFromPlayerInfo(player);
       playerInfoBean.setSocialStatus(SELF);
     } else {
@@ -287,6 +301,33 @@ public class PlayerServiceImpl implements PlayerService {
       }
 
       playerInfoBean.updateFromPlayerInfo(player);
+    }
+  }
+
+  @VisibleForTesting
+  public void checkForRatingUpdateNotification(Player oldPlayer, com.faforever.client.remote.domain.Player newPlayer) {
+    if (oldPlayer.getGlobalRatingMean() == 0f && oldPlayer.getGlobalRatingDeviation() == 0f) {
+      return;
+    }
+
+    if (newPlayer.getGlobalRating()[0] != oldPlayer.getGlobalRatingMean()
+        || newPlayer.getGlobalRating()[1] != oldPlayer.getGlobalRatingDeviation()) {
+      notificationService.addNotification(
+          new TransientNotification(
+              i18n.get("userInfo.ratingUpdate.global.title"),
+              i18n.get("userInfo.ratingUpdate.global.message", RatingUtil.getGlobalRating(oldPlayer), RatingUtil.getGlobalRating(newPlayer)),
+              IdenticonUtil.createIdenticon(oldPlayer.getId()),
+              event -> eventBus.post(new ShowProfileEvent(getCurrentPlayer().get()))));
+    }
+
+    if (newPlayer.getLadderRating()[0] != oldPlayer.getLeaderboardRatingMean()
+        || newPlayer.getLadderRating()[1] != oldPlayer.getLeaderboardRatingDeviation()) {
+      notificationService.addNotification(
+          new TransientNotification(
+              i18n.get("userInfo.ratingUpdate.ladder.title"),
+              i18n.get("userInfo.ratingUpdate.ladder.message", RatingUtil.getLeaderboardRating(oldPlayer), RatingUtil.getLeaderboardRating(newPlayer)),
+              IdenticonUtil.createIdenticon(oldPlayer.getId()),
+              event -> eventBus.post(new ShowProfileEvent(getCurrentPlayer().get()))));
     }
   }
 }

@@ -1,5 +1,6 @@
 package com.faforever.client.main;
 
+import com.faforever.client.chat.UserInfoWindowController;
 import com.faforever.client.chat.event.UnreadPrivateMessageEvent;
 import com.faforever.client.config.ClientProperties;
 import com.faforever.client.fx.AbstractViewController;
@@ -14,6 +15,7 @@ import com.faforever.client.login.LoginController;
 import com.faforever.client.main.event.NavigateEvent;
 import com.faforever.client.main.event.NavigationItem;
 import com.faforever.client.main.event.Open1v1Event;
+import com.faforever.client.main.event.ShowProfileEvent;
 import com.faforever.client.news.UnreadNewsEvent;
 import com.faforever.client.notification.ImmediateNotification;
 import com.faforever.client.notification.ImmediateNotificationController;
@@ -461,6 +463,14 @@ public class MainController implements Controller<Node> {
     currentItem = item;
     preferencesService.getPreferences().getMainWindow().setLastView(item.name());
     preferencesService.storeInBackground();
+  }
+
+  @Subscribe
+  public void onShowProfileEvent(ShowProfileEvent showProfileEvent) {
+    UserInfoWindowController userInfoWindowController = uiService.loadFxml("theme/user_info_window.fxml");
+    userInfoWindowController.setPlayer(showProfileEvent.getPlayer());
+    userInfoWindowController.setOwnerWindow(this.getRoot().getScene().getWindow());
+    userInfoWindowController.show();
   }
 
   private AbstractViewController<?> getView(NavigationItem item) {
