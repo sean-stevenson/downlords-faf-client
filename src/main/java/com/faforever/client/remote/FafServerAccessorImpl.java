@@ -281,7 +281,8 @@ public class FafServerAccessorImpl extends AbstractServerAccessor implements Faf
         new boolean[0],
         newGameInfo.getFeaturedMod().getTechnicalName(),
         newGameInfo.getPassword(),
-        null
+        null,
+        newGameInfo.getGameVisibility()
     );
 
     gameLaunchFuture = new CompletableFuture<>();
@@ -386,7 +387,7 @@ public class FafServerAccessorImpl extends AbstractServerAccessor implements Faf
     serverWriter.write(message);
   }
 
-  public void onServerMessage(String message) throws IOException {
+  public void onServerMessage(String message) {
     ServerCommand serverCommand = ServerCommand.fromString(message);
     if (serverCommand != null) {
       dispatchServerMessage(serverCommand);
@@ -395,7 +396,7 @@ public class FafServerAccessorImpl extends AbstractServerAccessor implements Faf
     }
   }
 
-  private void dispatchServerMessage(ServerCommand serverCommand) throws IOException {
+  private void dispatchServerMessage(ServerCommand serverCommand) {
     switch (serverCommand) {
       case PING:
         logger.debug("Server PINGed");
