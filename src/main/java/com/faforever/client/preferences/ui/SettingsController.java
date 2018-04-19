@@ -9,6 +9,7 @@ import com.faforever.client.notification.Action;
 import com.faforever.client.notification.NotificationService;
 import com.faforever.client.notification.PersistentNotification;
 import com.faforever.client.notification.Severity;
+import com.faforever.client.notification.TransientNotification;
 import com.faforever.client.preferences.LanguageInfo;
 import com.faforever.client.preferences.LocalizationPrefs;
 import com.faforever.client.preferences.NotificationsPrefs;
@@ -94,7 +95,7 @@ public class SettingsController implements Controller<Node> {
   public ComboBox<LanguageInfo> languageComboBox;
   public ComboBox<Theme> themeComboBox;
   public CheckBox rememberLastTabCheckBox;
-  public ToggleGroup toastPosition;
+  public ToggleGroup toastPositionToggleGroup;
   public ComboBox<Screen> toastScreenComboBox;
   public ToggleButton bottomLeftToastButton;
   public ToggleButton topRightToastButton;
@@ -137,16 +138,16 @@ public class SettingsController implements Controller<Node> {
   private void setSelectedToastPosition(ToastPosition newValue) {
     switch (newValue) {
       case TOP_RIGHT:
-        toastPosition.selectToggle(topRightToastButton);
+        toastPositionToggleGroup.selectToggle(topRightToastButton);
         break;
       case BOTTOM_RIGHT:
-        toastPosition.selectToggle(bottomRightToastButton);
+        toastPositionToggleGroup.selectToggle(bottomRightToastButton);
         break;
       case BOTTOM_LEFT:
-        toastPosition.selectToggle(bottomLeftToastButton);
+        toastPositionToggleGroup.selectToggle(bottomLeftToastButton);
         break;
       case TOP_LEFT:
-        toastPosition.selectToggle(topLeftToastButton);
+        toastPositionToggleGroup.selectToggle(topLeftToastButton);
         break;
     }
   }
@@ -191,7 +192,7 @@ public class SettingsController implements Controller<Node> {
 
     JavaFxUtil.addListener(preferences.getNotification().toastPositionProperty(), (observable, oldValue, newValue) -> setSelectedToastPosition(newValue));
     setSelectedToastPosition(preferences.getNotification().getToastPosition());
-    toastPosition.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+    toastPositionToggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
       if (newValue == topLeftToastButton) {
         preferences.getNotification().setToastPosition(ToastPosition.TOP_LEFT);
       }
@@ -226,7 +227,7 @@ public class SettingsController implements Controller<Node> {
     notifyOnAtMentionOnly.selectedProperty().bindBidirectional(preferences.getNotification().notifyOnAtMentionOnlyEnabledProperty());
     enableSoundsCheckBox.selectedProperty().bindBidirectional(preferences.getNotification().soundsEnabledProperty());
     gamePortTextField.textProperty().bindBidirectional(preferences.getForgedAlliance().portProperty(), new NumberStringConverter(integerNumberFormat));
-    gameLocationTextField.textProperty().bindBidirectional(preferences.getForgedAlliance().executablePathProperty(), PATH_STRING_CONVERTER);
+    gameLocationTextField.textProperty().bindBidirectional(preferences.getForgedAlliance().pathProperty(), PATH_STRING_CONVERTER);
     autoDownloadMapsCheckBox.selectedProperty().bindBidirectional(preferences.getForgedAlliance().autoDownloadMapsProperty());
 
     executableDecoratorField.textProperty().bindBidirectional(preferences.getForgedAlliance().executableDecoratorProperty());
@@ -293,13 +294,13 @@ public class SettingsController implements Controller<Node> {
 
   private void configureThemeSelection(Preferences preferences) {
     themeComboBox.setItems(FXCollections.observableArrayList(uiService.getAvailableThemes()));
-    themeComboBox.getSelectionModel().selectedItemProperty().addListener(new WeakChangeListener<>(selectedThemeChangeListener));
 
     Theme currentTheme = themeComboBox.getItems().stream()
         .filter(theme -> theme.getDisplayName().equals(preferences.getThemeName()))
         .findFirst().orElse(DEFAULT_THEME);
     themeComboBox.getSelectionModel().select(currentTheme);
 
+    themeComboBox.getSelectionModel().selectedItemProperty().addListener(selectedThemeChangeListener);
     JavaFxUtil.addListener(uiService.currentThemeProperty(), new WeakChangeListener<>(currentThemeChangeListener));
   }
 
@@ -382,5 +383,12 @@ public class SettingsController implements Controller<Node> {
           return null;
         }
     );
+  }
+
+  public void onPreviewToastButtonClicked() {
+    notificationService.addNotification(new TransientNotification(
+        i18n.get("settings.notifications.toastPreview.title"),
+        i18n.get("settings.notifications.toastPreview.text")
+    ));
   }
 }

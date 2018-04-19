@@ -61,7 +61,7 @@ public class GamesTilesContainerController implements Controller<Node> {
     };
 
     gameListChangeListener = change -> Platform.runLater(() -> {
-      synchronized (change.getList()) {
+      synchronized (change) {
         while (change.next()) {
           change.getRemoved().forEach(gameInfoBean -> tiledFlowPane.getChildren().remove(uidToGameCard.remove(gameInfoBean.getId())));
           change.getAddedSubList().forEach(GamesTilesContainerController.this::addGameCard);
@@ -139,5 +139,4 @@ public class GamesTilesContainerController implements Controller<Node> {
       this.comparator = reversed ? comparator.reversed() : comparator;
     }
   }
-
 }

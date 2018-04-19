@@ -63,7 +63,6 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -273,13 +272,12 @@ public class FafApiAccessorImpl implements FafApiAccessor {
 
   @Override
   public void changePassword(String username, String currentPasswordHash, String newPasswordHash) {
-    java.util.Map<String, String> body = new HashMap<>();
-    // TODO this should not be necessary; we are oauthed so the server knows our username
-    body.put("name", username);
-    body.put("pw_hash_old", currentPasswordHash);
-    body.put("pw_hash_new", newPasswordHash);
+    java.util.Map<String, String> body = ImmutableMap.of(
+        "currentPassword", currentPasswordHash,
+        "newPassword", newPasswordHash
+    );
 
-    post("/users/change_password", body, true);
+    post("/users/changePassword", body, true);
   }
 
   @Override

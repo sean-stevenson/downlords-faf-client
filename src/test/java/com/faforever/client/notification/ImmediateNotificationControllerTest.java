@@ -40,7 +40,7 @@ public class ImmediateNotificationControllerTest extends AbstractPlainJavaFxTest
 
     assertEquals("title", instance.titleLabel.getText());
     assertEquals("text", instance.errorMessageView.getEngine().getDocument().getDocumentElement().getTextContent());
-    assertThat(instance.buttonBar.getButtons(), empty());
+    assertThat(instance.dialogLayout.getActions(), empty());
   }
 
   @Test
@@ -55,13 +55,13 @@ public class ImmediateNotificationControllerTest extends AbstractPlainJavaFxTest
 
     assertEquals("title", instance.titleLabel.getText());
     assertEquals("text", instance.errorMessageView.getEngine().getDocument().getDocumentElement().getTextContent());
-    assertThat(instance.buttonBar.getButtons(), hasSize(1));
-    assertEquals("actionTitle", ((Button) instance.buttonBar.getButtons().get(0)).getText());
+    assertThat(instance.dialogLayout.getActions(), hasSize(1));
+    assertEquals("actionTitle", ((Button) instance.dialogLayout.getActions().get(0)).getText());
   }
 
   @Test
   public void testGetRoot() throws Exception {
-    Assert.assertThat(instance.getRoot(), is(instance.notificationRoot));
+    Assert.assertThat(instance.getRoot(), is(instance.immediateNotificationRoot));
     Assert.assertThat(instance.getRoot().getParent(), is(nullValue()));
   }
 }

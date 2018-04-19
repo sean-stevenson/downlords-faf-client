@@ -41,6 +41,8 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import com.jfoenix.animation.alert.JFXAlertAnimation;
+import com.jfoenix.controls.JFXAlert;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -54,7 +56,7 @@ import javafx.scene.control.Labeled;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Popup;
 import javafx.stage.PopupWindow.AnchorLocation;
 import javafx.stage.Screen;
@@ -114,6 +116,7 @@ public class MainController implements Controller<Node> {
   public ToggleButton leaderboardsButton;
   public ToggleButton unitsButton;
   public Pane mainRoot;
+  public StackPane contentWrapperPane;
   public ToggleGroup mainNavigation;
   @VisibleForTesting
   protected Popup transientNotificationsPopup;
@@ -244,18 +247,22 @@ public class MainController implements Controller<Node> {
     notificationsBadge.pseudoClassStateChanged(NOTIFICATION_ERROR_PSEUDO_CLASS, highestSeverity == Severity.ERROR);
   }
 
-  private void displayImmediateNotification(ImmediateNotification notification) {
-    ImmediateNotificationController controller = uiService.loadFxml("theme/immediate_notification.fxml");
-    controller.setNotification(notification);
-
-    Stage userInfoWindow = new Stage(StageStyle.TRANSPARENT);
-    userInfoWindow.initModality(Modality.NONE);
-    userInfoWindow.initOwner(StageHolder.getStage().getOwner());
-
-    WindowController windowController = uiService.loadFxml("theme/window.fxml");
-    windowController.configure(userInfoWindow, controller.getRoot(), true, CLOSE, MAXIMIZE_RESTORE);
-
-    userInfoWindow.show();
+  /**
+   * Hides the install4j splash screen. The hide method is invoked via reflection to accommodate starting the client
+   * without install4j (e.g. on linux).
+   */
+  private static void hideSplashScreen() {
+    try {
+      final Class splashScreenClass = Class.forName("com.install4j.api.launcher.SplashScreen");
+      final Method hideMethod = splashScreenClass.getDeclaredMethod("hide");
+      hideMethod.invoke(null);
+    } catch (ClassNotFoundException e) {
+      log.debug("No install4j splash screen found to close.");
+    } catch (NoSuchMethodException | IllegalAccessException e) {
+      log.error("Couldn't close install4j splash screen.", e);
+    } catch (InvocationTargetException e) {
+      log.error("Couldn't close install4j splash screen.", e.getCause());
+    }
   }
 
   private void onMatchmakerMessage(MatchmakerMessage message) {
@@ -487,21 +494,16 @@ public class MainController implements Controller<Node> {
     onNavigateButtonClicked(actionEvent);
   }
 
-  /**
-   * Hides the install4j splash screen. The hide method is invoked via reflection to accommodate starting the client without install4j (e.g. on linux).
-   */
-  private static void hideSplashScreen() {
-    try {
-      final Class splashScreenClass = Class.forName("com.install4j.api.launcher.SplashScreen");
-      final Method hideMethod = splashScreenClass.getDeclaredMethod("hide");
-      hideMethod.invoke(null);
-    } catch (ClassNotFoundException e) {
-      log.debug("No install4j splash screen found to close.");
-    } catch (NoSuchMethodException | IllegalAccessException e) {
-      log.error("Couldn't close install4j splash screen.", e);
-    } catch (InvocationTargetException e) {
-      log.error("Couldn't close install4j splash screen.", e.getCause());
-    }
+  private void displayImmediateNotification(ImmediateNotification notification) {
+    JFXAlert<?> dialog = new JFXAlert<>((Stage) mainRoot.getScene().getWindow());
+
+    ImmediateNotificationController controller = ((ImmediateNotificationController) uiService.loadFxml("theme/immediate_notification.fxml"))
+        .setNotification(notification)
+        .setCloseListener(dialog::close);
+
+    dialog.setContent(controller.getJfxDialogLayout());
+    dialog.setAnimation(JFXAlertAnimation.TOP_ANIMATION);
+    dialog.show();
   }
 
   public class ToastDisplayer implements InvalidationListener {

@@ -216,15 +216,15 @@ public class UiServiceImpl implements UiService {
   }
 
   private void reloadStylesheet() {
-    String styleSheet = getSceneStyleSheet();
+    String[] styleSheets = getStylesheets();
 
-    logger.debug("Changes detected, reloading stylesheet: {}", styleSheet);
-    scenes.forEach(scene -> setSceneStyleSheet(scene, styleSheet));
+    logger.debug("Changes detected, reloading stylesheets: {}", styleSheets);
+    scenes.forEach(scene -> setSceneStyleSheet(scene, styleSheets));
     setAndCreateWebViewsStyleSheet(getWebViewStyleSheet());
   }
 
-  private void setSceneStyleSheet(Scene scene, String styleSheet) {
-    Platform.runLater(() -> scene.getStylesheets().setAll(styleSheet));
+  private void setSceneStyleSheet(Scene scene, String[] styleSheets) {
+    Platform.runLater(() -> scene.getStylesheets().setAll(styleSheets));
   }
 
   private String getSceneStyleSheet() {
@@ -295,7 +295,12 @@ public class UiServiceImpl implements UiService {
 
   @Override
   public String[] getStylesheets() {
-    return new String[]{getSceneStyleSheet(), getThemeFile("theme/material-colors.css")};
+    return new String[]{
+        UiServiceImpl.class.getResource("/css/jfoenix-fonts.css").toExternalForm(),
+        UiServiceImpl.class.getResource("/css/jfoenix-design.css").toExternalForm(),
+        getThemeFile("theme/jfoenix.css"),
+        getSceneStyleSheet()
+    };
   }
 
   @Override

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.layout.HBox?>
 <HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="logicalNodeRoot" alignment="CENTER_LEFT" maxHeight="-Infinity"
@@ -9,7 +9,7 @@
     <children>
         <ChoiceBox fx:id="logicalOperatorField" maxHeight="1.7976931348623157E308" prefWidth="100.0"/>
         <fx:include fx:id="specification" source="specification.fxml"/>
-        <Button fx:id="removeCriteriaButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
-                onAction="#onRemoveCriteriaButtonClicked" text="%query.removeCriteria"/>
+        <JFXButton fx:id="removeCriteriaButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                   onAction="#onRemoveCriteriaButtonClicked" text="%query.removeCriteria"/>
     </children>
 </HBox>

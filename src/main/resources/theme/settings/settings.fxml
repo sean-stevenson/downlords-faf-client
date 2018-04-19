@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import com.jfoenix.controls.JFXPasswordField?>
+<?import com.jfoenix.controls.JFXRadioButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
 <VBox xmlns:fx="http://javafx.com/fxml/1" fx:id="settingsRoot" maxHeight="1.7976931348623157E308"
-      xmlns="http://javafx.com/javafx/8.0.60" fx:controller="com.faforever.client.preferences.ui.SettingsController">
+      xmlns="http://javafx.com/javafx/8.0.141" fx:controller="com.faforever.client.preferences.ui.SettingsController">
     <children>
         <HBox styleClass="header">
             <children>
@@ -31,12 +33,13 @@
                                 <VBox spacing="5.0">
                                     <children>
                                         <Label styleClass="h3" text="%settings.general.language" />
-                                        <ComboBox fx:id="languageComboBox" onAction="#onLanguageSelected"/>
+                                        <JFXComboBox fx:id="languageComboBox" onAction="#onLanguageSelected"/>
                                         <Label styleClass="h3" text="%settings.general.theme" />
-                                        <ComboBox fx:id="themeComboBox" disable="true" />
-                                        <CheckBox fx:id="rememberLastTabCheckBox" mnemonicParsing="false" text="%settings.general.rememberLastTab" />
+                                        <JFXComboBox fx:id="themeComboBox" disable="true"/>
+                                        <JFXCheckBox fx:id="rememberLastTabCheckBox" mnemonicParsing="false"
+                                                     text="%settings.general.rememberLastTab"/>
                                         <Label styleClass="h3" text="%settings.general.unitDatabase"/>
-                                        <ComboBox fx:id="unitDatabaseComboBox"/>
+                                        <JFXComboBox fx:id="unitDatabaseComboBox"/>
                                     </children>
                                 </VBox>
                             </children>
@@ -47,7 +50,7 @@
                             <children>
                                 <VBox prefWidth="200.0" rotate="90.0">
                                     <children>
-                                        <Label text="%settings.general" styleClass="tab-label"/>
+                                        <Label styleClass="tab-label" text="%settings.general"/>
                                     </children>
                                 </VBox>
                             </children>
@@ -61,9 +64,10 @@
                                 <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0">
                                     <children>
                                         <Label styleClass="h3" text="%settings.chat.maxMessages" />
-                                        <TextField fx:id="maxMessagesTextField" maxWidth="100.0" />
+                                        <JFXTextField fx:id="maxMessagesTextField" maxWidth="100.0"/>
                                         <Label styleClass="h3" text="%settings.chat.previews" />
-                                        <CheckBox fx:id="imagePreviewCheckBox" mnemonicParsing="false" text="%settings.chat.previewImages" />
+                                        <JFXCheckBox fx:id="imagePreviewCheckBox" mnemonicParsing="false"
+                                                     text="%settings.chat.previewImages"/>
                                         <Label styleClass="h3" text="%settings.chat.colors" />
                                         <VBox spacing="5.0">
                                             <children>
@@ -77,12 +81,13 @@
                                             </children>
                                         </VBox>
                                         <Label styleClass="h3" text="%settings.chat.foes" />
-                                        <CheckBox fx:id="hideFoeCheckBox" mnemonicParsing="false" text="%settings.chat.hideFoe" />
+                                        <JFXCheckBox fx:id="hideFoeCheckBox" mnemonicParsing="false"
+                                                     text="%settings.chat.hideFoe"/>
                                         <Label styleClass="h3" text="%settings.chat.notifications"/>
-                                        <CheckBox fx:id="notifyOnAtMentionOnly" mnemonicParsing="false"
-                                                  text="%settings.chat.notifyOnAtMentionOnly"/>
+                                        <JFXCheckBox fx:id="notifyOnAtMentionOnly" mnemonicParsing="false"
+                                                     text="%settings.chat.notifyOnAtMentionOnly"/>
                                         <Label text="%settings.chat.timeFormat"/>
-                                        <ComboBox fx:id="timeComboBox" onAction="#onTimeFormatSelected"/>
+                                        <JFXComboBox fx:id="timeComboBox" onAction="#onTimeFormatSelected"/>
                                     </children>
                                 </VBox>
                             </children>
@@ -93,7 +98,7 @@
                             <children>
                                 <VBox prefWidth="200.0" rotate="90.0">
                                     <children>
-                                        <Label text="%settings.chat" styleClass="tab-label"/>
+                                        <Label styleClass="tab-label" text="%settings.chat"/>
                                     </children>
                                 </VBox>
                             </children>
@@ -126,15 +131,19 @@
                                 <VBox GridPane.rowIndex="1">
                                     <children>
                                         <Label text="%settings.notifications.toastScreen" />
-                                        <ComboBox fx:id="toastScreenComboBox" prefWidth="150.0" />
+                                        <JFXComboBox fx:id="toastScreenComboBox" prefWidth="150.0"/>
                                     </children>
                                 </VBox>
                                 <VBox GridPane.rowIndex="2">
                                     <children>
-                                        <CheckBox fx:id="enableSoundsCheckBox" mnemonicParsing="false" text="%settings.sounds.enable" />
+                                        <JFXCheckBox fx:id="enableSoundsCheckBox" mnemonicParsing="false"
+                                                     text="%settings.sounds.enable"/>
                                     </children>
                                 </VBox>
-                                <GridPane hgap="10.0" vgap="10.0" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                <GridPane hgap="10.0" prefHeight="90.0" prefWidth="160.0"
+                                          style="-fx-border-color: white; -fx-border-radius: 5;" vgap="10.0"
+                                          GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER"
+                                          GridPane.rowIndex="1">
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
@@ -144,29 +153,81 @@
                                         <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
                                     </rowConstraints>
                                     <children>
-                                        <ToggleButton fx:id="topLeftToastButton" focusTraversable="false" mnemonicParsing="false" prefWidth="100.0" text="%settings.notifications.toastPosition.topLeft" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                        <JFXRadioButton fx:id="topLeftToastButton" graphicTextGap="0"
+                                                        GridPane.halignment="LEFT" GridPane.valignment="TOP">
                                             <toggleGroup>
-                                                <ToggleGroup fx:id="toastPosition" />
+                                                <ToggleGroup fx:id="toastPositionToggleGroup"/>
                                             </toggleGroup>
-                                        </ToggleButton>
-                                        <ToggleButton fx:id="bottomLeftToastButton" focusTraversable="false" mnemonicParsing="false" prefWidth="100.0" text="%settings.notifications.toastPosition.bottomLeft" toggleGroup="$toastPosition" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                                        <ToggleButton fx:id="topRightToastButton" focusTraversable="false" mnemonicParsing="false" prefWidth="100.0" text="%settings.notifications.toastPosition.topRight" toggleGroup="$toastPosition" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                                        <ToggleButton fx:id="bottomRightToastButton" focusTraversable="false" mnemonicParsing="false" prefWidth="100.0" selected="true" text="%settings.notifications.toastPosition.bottomRight" toggleGroup="$toastPosition" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                                            <GridPane.margin>
+                                                <Insets left="7.0" top="7.0"/>
+                                            </GridPane.margin>
+                                        </JFXRadioButton>
+                                        <JFXRadioButton fx:id="topRightToastButton" graphicTextGap="0"
+                                                        toggleGroup="$toastPositionToggleGroup" GridPane.columnIndex="1"
+                                                        GridPane.halignment="RIGHT" GridPane.valignment="TOP">
+                                            <GridPane.margin>
+                                                <Insets top="7.0"/>
+                                            </GridPane.margin>
+                                        </JFXRadioButton>
+                                        <JFXRadioButton fx:id="bottomLeftToastButton" graphicTextGap="0"
+                                                        toggleGroup="$toastPositionToggleGroup"
+                                                        GridPane.halignment="LEFT" GridPane.rowIndex="1"
+                                                        GridPane.valignment="BOTTOM">
+                                            <GridPane.margin>
+                                                <Insets bottom="7.0" left="7.0"/>
+                                            </GridPane.margin>
+                                        </JFXRadioButton>
+                                        <JFXRadioButton fx:id="bottomRightToastButton" graphicTextGap="0"
+                                                        toggleGroup="$toastPositionToggleGroup" GridPane.columnIndex="1"
+                                                        GridPane.halignment="RIGHT" GridPane.rowIndex="1"
+                                                        GridPane.valignment="BOTTOM">
+                                            <GridPane.margin>
+                                                <Insets bottom="7.0"/>
+                                            </GridPane.margin>
+                                        </JFXRadioButton>
+                                        <Button mnemonicParsing="false" onAction="#onPreviewToastButtonClicked"
+                                                text="%settings.notifications.toastPreview"
+                                                GridPane.columnSpan="2147483647" GridPane.halignment="CENTER"
+                                                GridPane.rowSpan="2147483647" GridPane.valignment="CENTER"/>
                                     </children>
                                 </GridPane>
-                                <CheckBox fx:id="displayLadder1v1ToastCheckBox" mnemonicParsing="false"
-                                          GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="10"
-                                          GridPane.valignment="CENTER"/>
-                                <CheckBox fx:id="displayPmReceivedToastCheckBox" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="CENTER" />
-                                <CheckBox fx:id="playPmReceivedSoundCheckBox" mnemonicParsing="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9" GridPane.valignment="CENTER" />
-                                <CheckBox fx:id="playFriendPlaysGameSoundCheckBox" disable="true" mnemonicParsing="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
-                                <CheckBox fx:id="playFriendJoinsGameSoundCheckBox" mnemonicParsing="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
-                                <CheckBox fx:id="playFriendOfflineSoundCheckBox" disable="true" mnemonicParsing="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
-                                <CheckBox fx:id="playFriendOnlineSoundCheckBox" disable="true" mnemonicParsing="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-                                <CheckBox fx:id="displayFriendOnlineToastCheckBox" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-                                <CheckBox fx:id="displayFriendOfflineToastCheckBox" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
-                                <CheckBox fx:id="displayFriendJoinsGameToastCheckBox" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="CENTER" />
-                                <CheckBox fx:id="displayFriendPlaysGameToastCheckBox" disable="true" mnemonicParsing="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="8" GridPane.valignment="CENTER" />
+                                <JFXCheckBox fx:id="displayLadder1v1ToastCheckBox" mnemonicParsing="false"
+                                             GridPane.columnIndex="2" GridPane.halignment="CENTER"
+                                             GridPane.rowIndex="10" GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="displayPmReceivedToastCheckBox" mnemonicParsing="false"
+                                             GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="9"
+                                             GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="playPmReceivedSoundCheckBox" mnemonicParsing="false"
+                                             GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="9"
+                                             GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="playFriendPlaysGameSoundCheckBox" disable="true"
+                                             mnemonicParsing="false" GridPane.columnIndex="3"
+                                             GridPane.halignment="CENTER" GridPane.rowIndex="8"
+                                             GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="playFriendJoinsGameSoundCheckBox" mnemonicParsing="false"
+                                             GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="7"
+                                             GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="playFriendOfflineSoundCheckBox" disable="true"
+                                             mnemonicParsing="false" GridPane.columnIndex="3"
+                                             GridPane.halignment="CENTER" GridPane.rowIndex="6"
+                                             GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="playFriendOnlineSoundCheckBox" disable="true"
+                                             mnemonicParsing="false" GridPane.columnIndex="3"
+                                             GridPane.halignment="CENTER" GridPane.rowIndex="5"
+                                             GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="displayFriendOnlineToastCheckBox" mnemonicParsing="false"
+                                             GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5"
+                                             GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="displayFriendOfflineToastCheckBox" mnemonicParsing="false"
+                                             GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="6"
+                                             GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="displayFriendJoinsGameToastCheckBox" mnemonicParsing="false"
+                                             GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7"
+                                             GridPane.valignment="CENTER"/>
+                                <JFXCheckBox fx:id="displayFriendPlaysGameToastCheckBox" disable="true"
+                                             mnemonicParsing="false" GridPane.columnIndex="2"
+                                             GridPane.halignment="CENTER" GridPane.rowIndex="8"
+                                             GridPane.valignment="CENTER"/>
                                 <Label text="%settings.notifications.ranked1v1" GridPane.rowIndex="10" />
                                 <Label text="%settings.notifications.pmReceived" GridPane.rowIndex="9" />
                                 <Label text="%settings.notifications.friendPlaysGame" GridPane.rowIndex="8" />
@@ -177,7 +238,8 @@
                                 <Label styleClass="h3" text="%settings.notifications.playSound" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="4" />
                                 <Label styleClass="h3" text="%settings.notifications" GridPane.rowIndex="3" />
                                 <Label styleClass="h3" text="%settings.notifications.toastPosition" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER" />
-                                <CheckBox fx:id="enableNotificationsCheckBox" mnemonicParsing="false" selected="true" text="%settings.notifications.enableNotifications" />
+                                <JFXCheckBox fx:id="enableNotificationsCheckBox" mnemonicParsing="false" selected="true"
+                                             text="%settings.notifications.enableNotifications"/>
                             </children>
                         </GridPane>
                     </content>
@@ -186,7 +248,7 @@
                             <children>
                                 <VBox prefWidth="200.0" rotate="90.0">
                                     <children>
-                                        <Label text="%settings.notifications" styleClass="tab-label"/>
+                                        <Label styleClass="tab-label" text="%settings.notifications"/>
                                     </children>
                                 </VBox>
                             </children>
@@ -201,23 +263,29 @@
                                     <children>
                                         <Label styleClass="h3" text="%settings.fa.gameConfiguration" />
                                         <Label text="%settings.fa.gamePort" />
-                                        <TextField fx:id="gamePortTextField" maxWidth="100.0" />
+                                        <JFXTextField fx:id="gamePortTextField" maxWidth="100.0"/>
                                         <Label text="%settings.fa.gameLocation" />
                                         <HBox spacing="10.0">
                                             <children>
-                                                <TextField fx:id="gameLocationTextField" promptText="%settings.fa.useDefault" HBox.hgrow="ALWAYS" />
-                                                <Button mnemonicParsing="false" onAction="#onSelectGameLocation" text="%settings.fa.chooseDirectory" />
+                                                <JFXTextField fx:id="gameLocationTextField"
+                                                              promptText="%settings.fa.useDefault" HBox.hgrow="ALWAYS"/>
+                                                <JFXButton mnemonicParsing="false" onAction="#onSelectGameLocation"
+                                                           text="%settings.fa.chooseDirectory"/>
                                             </children>
                                         </HBox>
-                                        <CheckBox fx:id="autoDownloadMapsCheckBox" mnemonicParsing="false" text="%settings.fa.autoDownloadMaps" />
+                                        <JFXCheckBox fx:id="autoDownloadMapsCheckBox" mnemonicParsing="false"
+                                                     text="%settings.fa.autoDownloadMaps"/>
                                         <Label styleClass="h3" text="%settings.fa.advanced" />
                                         <Label text="%settings.fa.executableDecorator" wrapText="true" />
-                                        <TextField fx:id="executableDecoratorField" promptText="&quot;%s&quot;" />
+                                        <JFXTextField fx:id="executableDecoratorField" promptText="&quot;%s&quot;"/>
                                         <Label text="%settings.fa.executionDirectory" wrapText="true" />
                                         <HBox maxWidth="1.7976931348623157E308" spacing="10.0">
                                             <children>
-                                                <TextField fx:id="executionDirectoryField" promptText="%settings.fa.useDefault" HBox.hgrow="ALWAYS" />
-                                                <Button disable="true" mnemonicParsing="false" onAction="#onSelectExecutionDirectory" text="%settings.fa.chooseDirectory" />
+                                                <JFXTextField fx:id="executionDirectoryField"
+                                                              promptText="%settings.fa.useDefault" HBox.hgrow="ALWAYS"/>
+                                                <JFXButton disable="true" mnemonicParsing="false"
+                                                           onAction="#onSelectExecutionDirectory"
+                                                           text="%settings.fa.chooseDirectory"/>
                                             </children>
                                         </HBox>
                                     </children>
@@ -230,7 +298,7 @@
                             <children>
                                 <VBox prefWidth="200.0" rotate="90.0">
                                     <children>
-                                        <Label text="%settings.fa.title" styleClass="tab-label"/>
+                                        <Label styleClass="tab-label" text="%settings.fa.title"/>
                                     </children>
                                 </VBox>
                             </children>
@@ -246,8 +314,11 @@
                                         <Label styleClass="h3" text="%settings.account.steamAccount" />
                                         <HBox>
                                             <children>
-                                                <TextField fx:id="steamAccountField" disable="true" maxWidth="270.0" prefHeight="30.0" prefWidth="270.0" promptText="%settings.account.steamAccount.prompt" />
-                                                <Button disable="true" mnemonicParsing="false" text="%settings.account.steamAccount.linkToSteam" />
+                                                <JFXTextField fx:id="steamAccountField" disable="true" maxWidth="270.0"
+                                                              prefHeight="30.0" prefWidth="270.0"
+                                                              promptText="%settings.account.steamAccount.prompt"/>
+                                                <JFXButton disable="true" mnemonicParsing="false"
+                                                           text="%settings.account.steamAccount.linkToSteam"/>
                                             </children>
                                         </HBox>
                                         <Label styleClass="h3" text="%settings.account.changePassword" />
@@ -264,13 +335,19 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                             <children>
-                                                <PasswordField fx:id="currentPasswordField" GridPane.columnIndex="1" />
+                                                <JFXPasswordField fx:id="currentPasswordField"
+                                                                  GridPane.columnIndex="1"/>
                                                 <Label text="%settings.account.currentPassword" />
                                                 <Label text="%settings.account.newPassword" GridPane.rowIndex="1" />
                                                 <Label text="%settings.account.confirmPassword" GridPane.rowIndex="2" />
-                                                <PasswordField fx:id="newPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <PasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                <Button mnemonicParsing="false" onAction="#onChangePasswordClicked" text="%settings.account.changePassword" textAlignment="JUSTIFY" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="4" />
+                                                <JFXPasswordField fx:id="newPasswordField" GridPane.columnIndex="1"
+                                                                  GridPane.rowIndex="1"/>
+                                                <JFXPasswordField fx:id="confirmPasswordField" GridPane.columnIndex="1"
+                                                                  GridPane.rowIndex="2"/>
+                                                <JFXButton mnemonicParsing="false" onAction="#onChangePasswordClicked"
+                                                           text="%settings.account.changePassword"
+                                                           textAlignment="JUSTIFY" GridPane.columnIndex="1"
+                                                           GridPane.halignment="RIGHT" GridPane.rowIndex="4"/>
                                                 <Label fx:id="passwordChangeErrorLabel" graphicTextGap="10.0"
                                                        maxHeight="1.7976931348623157E308"
                                                        maxWidth="1.7976931348623157E308" text="runtime error message"
@@ -314,7 +391,7 @@
                             <children>
                                 <VBox prefWidth="200.0" rotate="90.0">
                                     <children>
-                                        <Label text="%settings.account" styleClass="tab-label"/>
+                                        <Label styleClass="tab-label" text="%settings.account"/>
                                     </children>
                                 </VBox>
                             </children>

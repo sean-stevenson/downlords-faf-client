@@ -144,7 +144,7 @@ public class Ladder1v1Controller extends AbstractViewController<Node> {
     playButton.setDisable(factionsToButtons.values().stream().noneMatch(ToggleButton::isSelected));
 
     preferencesService.addUpdateListener(preferences -> {
-      if (preferencesService.getPreferences().getForgedAlliance().getExecutablePath() == null) {
+      if (preferencesService.getPreferences().getForgedAlliance().getPath() == null) {
         onCancelButtonClicked();
       }
     });
@@ -177,7 +177,7 @@ public class Ladder1v1Controller extends AbstractViewController<Node> {
   }
 
   public void onPlayButtonClicked() {
-    if (preferencesService.getPreferences().getForgedAlliance().getExecutablePath() == null) {
+    if (preferencesService.getPreferences().getForgedAlliance().getPath() == null) {
       eventBus.post(new MissingGamePathEvent(true));
       return;
     }
