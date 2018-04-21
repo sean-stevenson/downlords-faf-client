@@ -10,6 +10,7 @@ import com.faforever.client.map.MapService;
 import com.faforever.client.mod.FeaturedMod;
 import com.faforever.client.mod.ModService;
 import com.faforever.client.notification.Action;
+import com.faforever.client.notification.Action.Type;
 import com.faforever.client.notification.DismissAction;
 import com.faforever.client.notification.ImmediateNotification;
 import com.faforever.client.notification.NotificationService;
@@ -50,6 +51,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -171,7 +173,8 @@ public class ReplayServiceImpl implements ReplayService {
                   notificationService.addNotification(new ImmediateNotification(
                       i18n.get("errorTitle"),
                       i18n.get("mapNotFound", replayInfo.getMapname()),
-                      WARN
+                      WARN,
+                      Collections.singletonList(new Action(i18n.get("replay.local.markAsCorrupted"), Type.OK_DONE, event -> moveCorruptedReplayFile(replayFile)))
                   ));
                   return;
                 }
