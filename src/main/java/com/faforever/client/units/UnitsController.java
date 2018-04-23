@@ -7,9 +7,8 @@ import com.faforever.client.fx.JavaFxUtil;
 import com.faforever.client.main.event.NavigateEvent;
 import com.faforever.client.preferences.Preferences.UnitDataBaseType;
 import com.faforever.client.preferences.PreferencesService;
-import com.google.common.base.Strings;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import javafx.scene.Node;
-import javafx.scene.web.WebView;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,7 @@ public class UnitsController extends AbstractViewController<Node> {
   private final ClientProperties clientProperties;
   private final PreferencesService preferencesService;
   private final CookieService cookieService;
-  public WebView unitsRoot;
+  public BrowserView unitsRoot;
 
   @Inject
   public UnitsController(ClientProperties clientProperties1, PreferencesService preferencesService, CookieService cookieService) {
@@ -33,7 +32,7 @@ public class UnitsController extends AbstractViewController<Node> {
 
   @Override
   public void onDisplay(NavigateEvent navigateEvent) {
-    if (Strings.isNullOrEmpty(unitsRoot.getEngine().getLocation())) {
+    if ("about:blank".equals(unitsRoot.getBrowser().getURL())) {
       cookieService.setUpCookieManger();
       loadUnitDataBase(preferencesService.getPreferences().getUnitDataBaseType());
       JavaFxUtil.addListener(preferencesService.getPreferences().unitDataBaseTypeProperty(), (observable, oldValue, newValue) -> loadUnitDataBase(newValue));
@@ -42,7 +41,7 @@ public class UnitsController extends AbstractViewController<Node> {
 
   private void loadUnitDataBase(UnitDataBaseType newValue) {
     UnitDatabase unitDatabase = clientProperties.getUnitDatabase();
-    unitsRoot.getEngine().load(newValue == UnitDataBaseType.SPOOKY ? unitDatabase.getSpookiesUrl() : unitDatabase.getRackOversUrl());
+    unitsRoot.getBrowser().loadURL(newValue == UnitDataBaseType.SPOOKY ? unitDatabase.getSpookiesUrl() : unitDatabase.getRackOversUrl());
   }
 
   public Node getRoot() {

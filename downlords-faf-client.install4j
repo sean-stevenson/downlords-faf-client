@@ -1196,8 +1196,10 @@ return console.askYesNo(message, true);
       <excludedBeans />
       <overriddenPrincipalLanguage id="en" customLocalizationFile="" />
       <exclude>
+        <entry location="lib/faf-ice-adapter" fileType="regular" />
         <entry location="lib/faf-uid" fileType="regular" />
-        <entry location="lib/uid" fileType="regular" />
+        <entry location="lib/jxbrowser-linux64-6.19.1.jar" fileType="regular" />
+        <entry location="lib/jxbrowser-mac-6.19.1.jar" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -1214,6 +1216,8 @@ return console.askYesNo(message, true);
       <exclude>
         <entry location="lib/faf-ice-adapter" fileType="regular" />
         <entry location="lib/faf-uid" fileType="regular" />
+        <entry location="lib/jxbrowser-linux64-6.19.1.jar" fileType="regular" />
+        <entry location="lib/jxbrowser-mac-6.19.1.jar" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -1230,6 +1234,8 @@ return console.askYesNo(message, true);
       <exclude>
         <entry location="lib/faf-ice-adapter.exe" fileType="regular" />
         <entry location="lib/faf-uid.exe" fileType="regular" />
+        <entry location="lib/jxbrowser-mac-6.19.1.jar" fileType="regular" />
+        <entry location="lib/jxbrowser-win-6.19.1.jar" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -1246,6 +1252,8 @@ return console.askYesNo(message, true);
       <exclude>
         <entry location="lib/faf-ice-adapter.exe" fileType="regular" />
         <entry location="lib/faf-uid.exe" fileType="regular" />
+        <entry location="lib/jxbrowser-mac-6.19.1.jar" fileType="regular" />
+        <entry location="lib/jxbrowser-win-6.19.1.jar" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">
@@ -1274,6 +1282,8 @@ return console.askYesNo(message, true);
       <exclude>
         <entry location="lib/faf-ice-adapter.exe" fileType="regular" />
         <entry location="lib/faf-uid.exe" fileType="regular" />
+        <entry location="lib/jxbrowser-mac-6.19.1.jar" fileType="regular" />
+        <entry location="lib/jxbrowser-win-6.19.1.jar" fileType="regular" />
       </exclude>
       <variables />
       <autoUpdate useMinUpdatableVersion="false" minUpdatableVersion="" useMaxUpdatableVersion="false" maxUpdatableVersion="">

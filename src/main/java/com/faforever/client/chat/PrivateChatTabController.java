@@ -2,20 +2,15 @@ package com.faforever.client.chat;
 
 import com.faforever.client.audio.AudioService;
 import com.faforever.client.chat.event.UnreadPrivateMessageEvent;
-import com.faforever.client.clan.ClanService;
-import com.faforever.client.config.ClientProperties;
 import com.faforever.client.fx.JavaFxUtil;
 import com.faforever.client.fx.PlatformService;
 import com.faforever.client.fx.WebViewConfigurer;
 import com.faforever.client.i18n.I18n;
-import com.faforever.client.map.MapService;
 import com.faforever.client.notification.NotificationService;
 import com.faforever.client.player.Player;
 import com.faforever.client.player.PlayerService;
 import com.faforever.client.preferences.ChatPrefs;
 import com.faforever.client.preferences.PreferencesService;
-import com.faforever.client.replay.ExternalReplayInfoGenerator;
-import com.faforever.client.replay.ReplayService;
 import com.faforever.client.reporting.ReportingService;
 import com.faforever.client.theme.UiService;
 import com.faforever.client.uploader.ImageUploadService;
@@ -23,11 +18,11 @@ import com.faforever.client.user.UserService;
 import com.faforever.client.util.TimeService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.eventbus.EventBus;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import javafx.application.Platform;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TextInputControl;
-import javafx.scene.web.WebView;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -42,7 +37,7 @@ import static com.faforever.client.chat.SocialStatus.FOE;
 public class PrivateChatTabController extends AbstractChatTabController {
 
   public Tab privateChatTabRoot;
-  public WebView messagesWebView;
+  public BrowserView messagesWebView;
   public TextInputControl messageTextField;
   public PrivateUserInfoController privateUserInfoController;
   public ScrollPane gameDetailScrollPane;
@@ -51,15 +46,13 @@ public class PrivateChatTabController extends AbstractChatTabController {
 
   @Inject
   // TODO cut dependencies
-  public PrivateChatTabController(ClanService clanService,
-                                  UserService userService,
+  public PrivateChatTabController(UserService userService,
                                   PlatformService platformService,
                                   PreferencesService preferencesService,
                                   PlayerService playerService,
                                   TimeService timeService,
                                   I18n i18n,
                                   ImageUploadService imageUploadService,
-                                  UrlPreviewResolver urlPreviewResolver,
                                   NotificationService notificationService,
                                   ReportingService reportingService,
                                   UiService uiService,
@@ -67,15 +60,11 @@ public class PrivateChatTabController extends AbstractChatTabController {
                                   EventBus eventBus,
                                   AudioService audioService,
                                   ChatService chatService,
-                                  MapService mapService,
                                   WebViewConfigurer webViewConfigurer,
-                                  CountryFlagService countryFlagService,
-                                  ReplayService replayService,
-                                  ClientProperties clientProperties,
-                                  ExternalReplayInfoGenerator externalReplayInfoGenerator) {
-    super(clanService, webViewConfigurer, userService, chatService, platformService, preferencesService, playerService, audioService, timeService, i18n,
-        imageUploadService, urlPreviewResolver, notificationService, reportingService, uiService, autoCompletionHelper,
-        eventBus, countryFlagService, replayService, clientProperties, externalReplayInfoGenerator);
+                                  CountryFlagService countryFlagService) {
+    super(webViewConfigurer, userService, chatService, platformService, preferencesService, playerService, audioService,
+        timeService, i18n, imageUploadService, notificationService, reportingService, uiService, autoCompletionHelper,
+        eventBus, countryFlagService);
   }
 
 
@@ -118,7 +107,7 @@ public class PrivateChatTabController extends AbstractChatTabController {
   }
 
   @Override
-  protected WebView getMessagesWebView() {
+  protected BrowserView getMessagesBrowserView() {
     return messagesWebView;
   }
 

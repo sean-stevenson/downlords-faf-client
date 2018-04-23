@@ -25,8 +25,10 @@ import com.faforever.client.remote.domain.GameStatus;
 import com.faforever.client.replay.ReplayService;
 import com.faforever.client.reporting.ReportingService;
 import com.faforever.client.theme.UiService;
+import com.faforever.client.util.JxBrowserUtil;
 import com.faforever.client.util.TimeService;
 import com.google.common.base.Strings;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -46,7 +48,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.scene.web.WebView;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -63,6 +65,7 @@ import static javafx.collections.FXCollections.observableList;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Slf4j
 public class CoopController extends AbstractViewController<Node> {
 
   private static final Predicate<Game> OPEN_COOP_GAMES_PREDICATE = gameInfoBean ->
@@ -80,10 +83,12 @@ public class CoopController extends AbstractViewController<Node> {
   private final TimeService timeService;
   private final WebViewConfigurer webViewConfigurer;
   private final ModService modService;
+  private final PreferencesService preferencesService;
+
   public Node coopRoot;
   public ComboBox<CoopMission> missionComboBox;
   public ImageView mapImageView;
-  public WebView descriptionWebView;
+  public BrowserView descriptionWebView;
   public Pane gameViewContainer;
   public TextField titleTextField;
   public Button playButton;
@@ -98,7 +103,10 @@ public class CoopController extends AbstractViewController<Node> {
   public TableColumn<CoopResult, String> replayColumn;
 
   @Inject
-  public CoopController(ReplayService replayService, GameService gameService, CoopService coopService, NotificationService notificationService, I18n i18n, ReportingService reportingService, MapService mapService, PreferencesService preferencesService, UiService uiService, TimeService timeService, WebViewConfigurer webViewConfigurer, ModService modService) {
+  public CoopController(ReplayService replayService, GameService gameService, CoopService coopService,
+                        NotificationService notificationService, I18n i18n, ReportingService reportingService,
+                        MapService mapService, PreferencesService preferencesService, UiService uiService,
+                        TimeService timeService, WebViewConfigurer webViewConfigurer, ModService modService) {
     this.replayService = replayService;
     this.gameService = gameService;
     this.coopService = coopService;
@@ -106,6 +114,7 @@ public class CoopController extends AbstractViewController<Node> {
     this.i18n = i18n;
     this.reportingService = reportingService;
     this.mapService = mapService;
+    this.preferencesService = preferencesService;
     this.uiService = uiService;
     this.timeService = timeService;
     this.webViewConfigurer = webViewConfigurer;
@@ -147,7 +156,7 @@ public class CoopController extends AbstractViewController<Node> {
       return button.getRoot();
     }));
 
-    webViewConfigurer.configureWebView(descriptionWebView);
+    webViewConfigurer.configureWebView(descriptionWebView, log);
 
     ObservableList<Game> games = gameService.getGames();
 
@@ -234,7 +243,7 @@ public class CoopController extends AbstractViewController<Node> {
 
   private void setSelectedMission(CoopMission mission) {
     Platform.runLater(() -> {
-      descriptionWebView.getEngine().loadContent(mission.getDescription());
+      JxBrowserUtil.setContent(mission.getDescription(), preferencesService.getCacheDirectory(), descriptionWebView.getBrowser());
       mapImageView.setImage(mapService.loadPreview(mission.getMapFolderName(), PreviewSize.SMALL));
     });
 

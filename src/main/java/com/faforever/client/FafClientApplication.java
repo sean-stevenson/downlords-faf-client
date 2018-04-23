@@ -8,8 +8,8 @@ import com.faforever.client.main.MainController;
 import com.faforever.client.preferences.PreferencesService;
 import com.faforever.client.theme.UiService;
 import com.faforever.client.ui.StageHolder;
+import com.teamdev.jxbrowser.chromium.BrowserType;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -67,11 +67,12 @@ public class FafClientApplication extends Application {
   public void init() {
     Font.loadFont(FafClientApplication.class.getResourceAsStream("/font/dfc-icons.ttf"), 10);
     JavaFxUtil.fixTooltipDuration();
+    System.setProperty("jxbrowser.browser.type", BrowserType.LIGHTWEIGHT.name());
 
-    Platform.runLater(() -> applicationContext = new SpringApplicationBuilder(FafClientApplication.class)
+    applicationContext = new SpringApplicationBuilder(FafClientApplication.class)
         .profiles(getAdditionalProfiles())
         .bannerMode(Mode.OFF)
-        .run(getParameters().getRaw().toArray(new String[0])));
+        .run(getParameters().getRaw().toArray(new String[0]));
   }
 
   @Override

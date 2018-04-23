@@ -4,6 +4,7 @@
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import com.jfoenix.controls.JFXPasswordField?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import com.teamdev.jxbrowser.chromium.javafx.BrowserView?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -16,7 +17,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.web.WebView?>
 <?import java.lang.Integer?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="coopRoot" hgap="20.0" maxHeight="1.7976931348623157E308"
           maxWidth="1.7976931348623157E308" vgap="20.0" xmlns="http://javafx.com/javafx/8"
@@ -36,7 +36,7 @@
     </rowConstraints>
     <children>
         <Label styleClass="h2" text="%coop.leaderboard" GridPane.columnSpan="2" GridPane.rowIndex="3" />
-        <WebView fx:id="descriptionWebView" prefHeight="-1.0" prefWidth="-1.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <BrowserView fx:id="descriptionWebView" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
             <children>
                 <JFXTextField fx:id="titleTextField" maxWidth="1.7976931348623157E308" promptText="%game.create.title"

@@ -10,6 +10,7 @@ import com.faforever.client.remote.domain.IceServersServerMessage.IceServer;
 import com.faforever.client.remote.domain.LoginMessage;
 import com.faforever.client.remote.domain.ServerMessage;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.net.URL;
 import java.util.List;
@@ -60,4 +61,7 @@ public interface FafServerAccessor {
   CompletableFuture<List<IceServer>> getIceServers();
 
   void restoreGameSession(int id);
+
+  @Scheduled(fixedRate = 60_000)
+  void ping();
 }

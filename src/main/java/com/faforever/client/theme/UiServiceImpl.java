@@ -5,7 +5,9 @@ import com.faforever.client.fx.Controller;
 import com.faforever.client.fx.JavaFxUtil;
 import com.faforever.client.i18n.I18n;
 import com.faforever.client.preferences.PreferencesService;
+import com.faforever.client.util.JxBrowserUtil;
 import com.github.nocatch.NoCatch.NoCatchRunnable;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -16,7 +18,7 @@ import javafx.collections.ObservableMap;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.web.WebView;
+import lombok.SneakyThrows;
 import org.apache.commons.compress.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +75,7 @@ public class UiServiceImpl implements UiService {
   private static final int THEME_VERSION = 1;
   private static final String METADATA_FILE_NAME = "theme.properties";
   private final Set<Scene> scenes;
-  private final Set<WebView> webViews;
+  private final Set<BrowserView> browserViews;
 
   private final PreferencesService preferencesService;
   private final ThreadPoolExecutor threadPoolExecutor;
@@ -102,7 +104,7 @@ public class UiServiceImpl implements UiService {
     this.applicationContext = applicationContext;
 
     scenes = Collections.synchronizedSet(new HashSet<>());
-    webViews = new HashSet<>();
+    browserViews = new HashSet<>();
     watchKeys = new HashMap<>();
     currentTheme = new SimpleObjectProperty<>(DEFAULT_THEME);
     folderNamesByTheme = new HashMap<>();
@@ -118,21 +120,27 @@ public class UiServiceImpl implements UiService {
   }
 
   @PostConstruct
-  void postConstruct() throws IOException, InterruptedException {
+  void postConstruct() throws IOException {
     resources = new MessageSourceResourceBundle(messageSource, i18n.getUserSpecificLocale());
     Path themesDirectory = preferencesService.getThemesDirectory();
     startWatchService(themesDirectory);
-    Path cacheStylesheetsDirectory = preferencesService.getCacheStylesheetsDirectory();
-    if (Files.exists(cacheStylesheetsDirectory)) {
-      deleteRecursively(cacheStylesheetsDirectory);
-    }
+    deleteStylesheetsCacheDirectory();
     loadThemes();
 
     String storedTheme = preferencesService.getPreferences().getThemeName();
     setTheme(themesByFolderName.get(storedTheme));
+
+    loadWebViewsStyleSheet(getWebViewStyleSheet());
   }
 
-  private void startWatchService(Path themesDirectory) throws IOException, InterruptedException {
+  private void deleteStylesheetsCacheDirectory() throws IOException {
+    Path cacheStylesheetsDirectory = preferencesService.getCacheStylesheetsDirectory();
+    if (Files.exists(cacheStylesheetsDirectory)) {
+      deleteRecursively(cacheStylesheetsDirectory);
+    }
+  }
+
+  private void startWatchService(Path themesDirectory) throws IOException {
     watchService = themesDirectory.getFileSystem().newWatchService();
     threadPoolExecutor.execute(() -> {
       try {
@@ -143,8 +151,6 @@ public class UiServiceImpl implements UiService {
         }
       } catch (InterruptedException | ClosedWatchServiceException e) {
         logger.debug("Watcher service terminated");
-      } catch (IOException e) {
-        logger.warn("Exception while watching directories", e);
       }
     });
   }
@@ -172,10 +178,7 @@ public class UiServiceImpl implements UiService {
   @PreDestroy
   void preDestroy() throws IOException {
     IOUtils.closeQuietly(watchService);
-    Path cacheStylesheetsDirectory = preferencesService.getCacheStylesheetsDirectory();
-    if (Files.exists(cacheStylesheetsDirectory)) {
-      deleteRecursively(cacheStylesheetsDirectory);
-    }
+    deleteStylesheetsCacheDirectory();
   }
 
   private void stopWatchingTheme(Theme theme) {
@@ -194,7 +197,7 @@ public class UiServiceImpl implements UiService {
     noCatch(() -> Files.walkFileTree(themePath, new DirectoryVisitor(path -> watchDirectory(themePath, watchService))));
   }
 
-  private void onWatchEvent(WatchKey key) throws IOException {
+  private void onWatchEvent(WatchKey key) {
     for (WatchEvent<?> watchEvent : key.pollEvents()) {
       Path path = (Path) watchEvent.context();
       if (watchEvent.kind() == ENTRY_CREATE && Files.isDirectory(path)) {
@@ -218,9 +221,9 @@ public class UiServiceImpl implements UiService {
   private void reloadStylesheet() {
     String[] styleSheets = getStylesheets();
 
-    logger.debug("Changes detected, reloading stylesheets: {}", styleSheets);
+    logger.debug("Changes detected, reloading stylesheets: {}", (Object[]) styleSheets);
     scenes.forEach(scene -> setSceneStyleSheet(scene, styleSheets));
-    setAndCreateWebViewsStyleSheet(getWebViewStyleSheet());
+    loadWebViewsStyleSheet(getWebViewStyleSheet());
   }
 
   private void setSceneStyleSheet(Scene scene, String[] styleSheets) {
@@ -304,13 +307,9 @@ public class UiServiceImpl implements UiService {
   }
 
   @Override
-  public void registerWebView(WebView webView) {
-    webViews.add(webView);
-    if (currentTempStyleSheet == null) {
-      setAndCreateWebViewsStyleSheet(getWebViewStyleSheet());
-    } else {
-      Platform.runLater(() -> webView.getEngine().setUserStyleSheetLocation(getWebViewStyleSheet()));
-    }
+  public void registerBrowserView(BrowserView browserView) {
+    browserViews.add(browserView);
+    JxBrowserUtil.injectStyleSheet(browserView.getBrowser(), currentTempStyleSheet);
   }
 
   @Override
@@ -353,25 +352,23 @@ public class UiServiceImpl implements UiService {
     return getThemeFileUrl(WEBVIEW_CSS_FILE).toString();
   }
 
-  private void setAndCreateWebViewsStyleSheet(String styleSheetUrl) {
+  @SneakyThrows
+  private void loadWebViewsStyleSheet(String styleSheetUrl) {
     // Always copy to a new file since WebView locks the loaded one
     Path stylesheetsCacheDirectory = preferencesService.getCacheStylesheetsDirectory();
 
-    noCatch(() -> {
-      Files.createDirectories(stylesheetsCacheDirectory);
+    Files.createDirectories(stylesheetsCacheDirectory);
 
-      Path newTempStyleSheet = Files.createTempFile(stylesheetsCacheDirectory, "style-webview", ".css");
+    Path newTempStyleSheet = Files.createTempFile(stylesheetsCacheDirectory, "style-webview", ".css");
 
-      try (InputStream inputStream = new URL(styleSheetUrl).openStream()) {
-        Files.copy(inputStream, newTempStyleSheet, StandardCopyOption.REPLACE_EXISTING);
-      }
-      String newStyleSheetUrl = newTempStyleSheet.toUri().toURL().toString();
-      webViews.forEach(webView -> Platform.runLater(() -> webView.getEngine().setUserStyleSheetLocation(newStyleSheetUrl)));
-      logger.debug("{} created and applied to all web views", newTempStyleSheet.getFileName());
-      if (currentTempStyleSheet != null) {
-        Files.delete(currentTempStyleSheet);
-      }
-      currentTempStyleSheet = newTempStyleSheet;
-    });
+    try (InputStream inputStream = new URL(styleSheetUrl).openStream()) {
+      Files.copy(inputStream, newTempStyleSheet, StandardCopyOption.REPLACE_EXISTING);
+    }
+    if (currentTempStyleSheet != null) {
+      Files.delete(currentTempStyleSheet);
+    }
+    currentTempStyleSheet = newTempStyleSheet;
+    browserViews.forEach(browserView -> Platform.runLater(() -> JxBrowserUtil.updateStyleSheet(browserView, currentTempStyleSheet)));
+    logger.debug("{} created and applied to all web views", newTempStyleSheet.getFileName());
   }
 }

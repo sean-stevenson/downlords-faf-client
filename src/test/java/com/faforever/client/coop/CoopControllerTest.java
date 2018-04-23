@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.slf4j.LoggerFactory;
 import org.testfx.util.WaitForAsyncUtils;
 
 import java.util.concurrent.CompletableFuture;
@@ -89,7 +90,7 @@ public class CoopControllerTest extends AbstractPlainJavaFxTest {
 
     loadFxml("theme/play/coop/coop.fxml", clazz -> instance);
 
-    verify(webViewConfigurer).configureWebView(instance.descriptionWebView);
+    verify(webViewConfigurer).configureWebView(instance.descriptionWebView, LoggerFactory.getLogger(CoopController.class));
   }
 
   @Test

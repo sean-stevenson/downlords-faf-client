@@ -1,74 +1,90 @@
 package com.faforever.client.fx;
 
-import com.faforever.client.preferences.PreferencesService;
 import com.faforever.client.theme.UiService;
-import javafx.concurrent.Worker.State;
+import com.teamdev.jxbrowser.chromium.Browser;
+import com.teamdev.jxbrowser.chromium.BrowserPreferences;
+import com.teamdev.jxbrowser.chromium.JSObject;
+import com.teamdev.jxbrowser.chromium.dom.By;
+import com.teamdev.jxbrowser.chromium.dom.DOMElement;
+import com.teamdev.jxbrowser.chromium.events.LoadAdapter;
+import com.teamdev.jxbrowser.chromium.events.LoadEvent;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
+import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
+import javafx.scene.input.MouseEvent;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.events.EventListener;
-import org.w3c.dom.events.EventTarget;
 
-import javax.inject.Inject;
+import java.util.List;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class WebViewConfigurer {
 
+  /**
+   * This is the member name within the JavaScript code that provides access to the Java callback instance.
+   */
+  private static final String JAVA_REFERENCE_IN_JAVASCRIPT = "java";
   private static final double ZOOM_STEP = 0.2d;
-  private static final String EVENT_TYPE_CLICK = "click";
 
-  private final PreferencesService preferencesService;
   private final UiService uiService;
-  private final PlatformService platformService;
+  private final ApplicationContext applicationContext;
 
-  @Inject
-  public WebViewConfigurer(PreferencesService preferencesService, UiService uiService, PlatformService platformService) {
-    this.preferencesService = preferencesService;
+  public WebViewConfigurer(UiService uiService, ApplicationContext applicationContext) {
     this.uiService = uiService;
-    this.platformService = platformService;
+    this.applicationContext = applicationContext;
   }
 
-  public void configureWebView(WebView webView) {
-    webView.setContextMenuEnabled(false);
-    webView.setOnScroll(event -> {
+  public void configureWebView(BrowserView browserView, Logger logger) {
+    Browser browser = browserView.getBrowser();
+    browser.addConsoleListener(consoleEvent -> logger.debug(consoleEvent.toString()));
+
+    browserView.setScrollEventsHandler(event -> {
       if (event.isControlDown()) {
-        webView.setZoom(webView.getZoom() + ZOOM_STEP * Math.signum(event.getDeltaY()));
+        browser.setZoomLevel(browser.getZoomLevel() + ZOOM_STEP * Math.signum(event.getDeltaY()));
+        return true;
       }
+      return false;
     });
-    webView.setOnKeyPressed(event -> {
+
+    browserView.setOnKeyPressed(event -> {
       if (event.isControlDown() && (event.getCode() == KeyCode.DIGIT0 || event.getCode() == KeyCode.NUMPAD0)) {
-        webView.setZoom(1);
+        browserView.getBrowser().zoomReset();
       }
     });
 
-    WebEngine engine = webView.getEngine();
-    engine.setUserDataDirectory(preferencesService.getCacheDirectory().toFile());
-    uiService.registerWebView(webView);
-    JavaFxUtil.addListener(webView.getEngine().getLoadWorker().stateProperty(), (observable, oldValue, newValue) -> {
-      if (newValue == State.SUCCEEDED) {
-        EventListener listener = ev -> {
-          ev.preventDefault();
-          String domEventType = ev.getType();
-          if (domEventType.equals(EVENT_TYPE_CLICK)) {
-            platformService.showDocument(((Element) ev.getTarget()).getAttribute("href"));
-            ev.stopPropagation();
-          }
-        };
+    BrowserPreferences preferences = browser.getPreferences();
+    preferences.setTransparentBackground(true);
+    browser.setPreferences(preferences);
 
-        Document doc = webView.getEngine().getDocument();
-        if (doc == null) {
-          return;
-        }
-        NodeList nodeList = doc.getElementsByTagName("a");
-        for (int i = 0; i < nodeList.getLength(); i++) {
-          ((EventTarget) nodeList.item(i)).addEventListener(EVENT_TYPE_CLICK, listener, true);
+    BrowserCallback browserCallback = applicationContext.getBean(BrowserCallback.class);
+    browserCallback.setBrowser(browser);
+
+    EventHandler<MouseEvent> moveHandler = event -> {
+      browserCallback.setLastMouseX(event.getScreenX());
+      browserCallback.setLastMouseY(event.getScreenY());
+    };
+    browserView.addEventHandler(MouseEvent.MOUSE_MOVED, moveHandler);
+
+    browser.addLoadListener(new LoadAdapter() {
+
+      @Override
+      public void onDocumentLoadedInMainFrame(LoadEvent event) {
+        uiService.registerBrowserView(browserView);
+
+        Browser browser = event.getBrowser();
+        JSObject window = browser.executeJavaScriptAndReturnValue("window").asObject();
+        window.setProperty(JAVA_REFERENCE_IN_JAVASCRIPT, browserCallback);
+
+        List<DOMElement> links = browser.getDocument().findElements(By.tagName("a"));
+        for (DOMElement link : links) {
+          String href = link.getAttribute("href");
+          link.setAttribute("onMouseOver", "java.previewUrl('" + href + "')");
+          link.setAttribute("onMouseOut", "java.hideUrlPreview()");
+          link.setAttribute("href", "javascript:java.openUrl('" + href + "');");
         }
       }
     });

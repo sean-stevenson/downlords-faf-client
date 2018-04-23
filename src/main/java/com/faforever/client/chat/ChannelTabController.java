@@ -1,8 +1,6 @@
 package com.faforever.client.chat;
 
 import com.faforever.client.audio.AudioService;
-import com.faforever.client.clan.ClanService;
-import com.faforever.client.config.ClientProperties;
 import com.faforever.client.fx.JavaFxUtil;
 import com.faforever.client.fx.PlatformService;
 import com.faforever.client.fx.WebViewConfigurer;
@@ -12,8 +10,6 @@ import com.faforever.client.player.Player;
 import com.faforever.client.player.PlayerService;
 import com.faforever.client.preferences.ChatPrefs;
 import com.faforever.client.preferences.PreferencesService;
-import com.faforever.client.replay.ExternalReplayInfoGenerator;
-import com.faforever.client.replay.ReplayService;
 import com.faforever.client.reporting.ReportingService;
 import com.faforever.client.theme.UiService;
 import com.faforever.client.uploader.ImageUploadService;
@@ -22,6 +18,8 @@ import com.faforever.client.util.TimeService;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.eventbus.EventBus;
 import com.google.gson.Gson;
+import com.teamdev.jxbrowser.chromium.JSFunction;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.WeakChangeListener;
@@ -43,7 +41,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.WebView;
 import javafx.stage.Popup;
 import javafx.stage.PopupWindow;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -92,7 +89,7 @@ public class ChannelTabController extends AbstractChatTabController {
   public TitledPane chatOnlyTitlePane;
   public TitledPane foesTitlePane;
   public Tab channelTabRoot;
-  public WebView messagesWebView;
+  public BrowserView messagesWebView;
   public Pane moderatorsPane;
   public Pane friendsPane;
   public Pane foesPane;
@@ -108,29 +105,26 @@ public class ChannelTabController extends AbstractChatTabController {
 
   // TODO cut dependencies
   @Inject
-  public ChannelTabController(ClanService clanService, UserService userService, ChatService chatService,
+  public ChannelTabController(UserService userService, ChatService chatService,
                               PlatformService platformService, PreferencesService preferencesService,
                               PlayerService playerService, AudioService audioService, TimeService timeService,
-                              I18n i18n, ImageUploadService imageUploadService, UrlPreviewResolver urlPreviewResolver,
+                              I18n i18n, ImageUploadService imageUploadService,
                               NotificationService notificationService, ReportingService reportingService,
                               UiService uiService, AutoCompletionHelper autoCompletionHelper, EventBus eventBus,
                               WebViewConfigurer webViewConfigurer, ThreadPoolExecutor threadPoolExecutor,
-                              TaskScheduler taskScheduler, CountryFlagService countryFlagService,
-                              ReplayService replayService, ClientProperties clientProperties,
-                              ExternalReplayInfoGenerator externalReplayInfoGenerator) {
+                              TaskScheduler taskScheduler, CountryFlagService countryFlagService) {
 
-    super(clanService, webViewConfigurer, userService, chatService, platformService, preferencesService, playerService,
-        audioService, timeService, i18n, imageUploadService, urlPreviewResolver, notificationService, reportingService,
-        uiService, autoCompletionHelper, eventBus, countryFlagService, replayService, clientProperties, externalReplayInfoGenerator);
+    super(webViewConfigurer, userService, chatService, platformService, preferencesService, playerService, audioService,
+        timeService, i18n, imageUploadService, notificationService, reportingService, uiService, autoCompletionHelper,
+        eventBus, countryFlagService);
 
     userToChatUserControls = FXCollections.observableMap(new ConcurrentHashMap<>());
     this.threadPoolExecutor = threadPoolExecutor;
     this.taskScheduler = taskScheduler;
   }
 
-
   // TODO clean this up
-  public Map<String, Map<Pane, ChatUserItemController>> getUserToChatUserControls() {
+  Map<String, Map<Pane, ChatUserItemController>> getUserToChatUserControls() {
     return userToChatUserControls;
   }
 
@@ -221,11 +215,14 @@ public class ChannelTabController extends AbstractChatTabController {
     Map<String, String> userToColor = new HashMap<>();
     channel.getUsers().stream().filter(chatUser -> chatUser.getColor() != null).forEach(chatUser
         -> userToColor.put(chatUser.getUsername(), JavaFxUtil.toRgbCode(chatUser.getColor())));
-    getJsObject().call("setAllMessageColors", new Gson().toJson(userToColor));
+
+    JSFunction setAllMessageColors = getJsObject().asObject().getProperty("setAllMessageColors").asFunction();
+    setAllMessageColors.invoke(getJsObject(), new Gson().toJson(userToColor));
   }
 
   private void removeAllMessageColors() {
-    getJsObject().call("removeAllMessageColors");
+    JSFunction setAllMessageColors = getJsObject().asObject().getProperty("removeAllMessageColors").asFunction();
+    setAllMessageColors.invoke(getJsObject());
   }
 
   @VisibleForTesting
@@ -274,7 +271,7 @@ public class ChannelTabController extends AbstractChatTabController {
   }
 
   @Override
-  protected WebView getMessagesWebView() {
+  protected BrowserView getMessagesBrowserView() {
     return messagesWebView;
   }
 
@@ -325,7 +322,9 @@ public class ChannelTabController extends AbstractChatTabController {
     if (chatUser.getColor() != null) {
       color = JavaFxUtil.toRgbCode(chatUser.getColor());
     }
-    getJsObject().call("updateUserMessageColor", chatUser.getUsername(), color);
+
+    JSFunction setAllMessageColors = getJsObject().asObject().getProperty("updateUserMessageColor").asFunction();
+    setAllMessageColors.invoke(getJsObject(), chatUser.getUsername(), color);
   }
 
   private void removeUserMessageClass(Player player, String cssClass) {
@@ -333,16 +332,19 @@ public class ChannelTabController extends AbstractChatTabController {
     if (cssClass.isEmpty()) {
       return;
     }
-    Platform.runLater(() -> getJsObject().call("removeUserMessageClass", String.format(USER_CSS_CLASS_FORMAT, player.getUsername()), cssClass));
 
+    JSFunction setAllMessageColors = getJsObject().getProperty("removeUserMessageClass").asFunction();
+    setAllMessageColors.invoke(getJsObject(), String.format(USER_CSS_CLASS_FORMAT, player.getUsername()), cssClass);
   }
 
   private void setUserMessageClass(Player player, String cssClass) {
-    Platform.runLater(() -> getJsObject().call("setUserMessageClass", String.format(USER_CSS_CLASS_FORMAT, player.getUsername()), cssClass));
+    JSFunction setAllMessageColors = getJsObject().getProperty("setUserMessageClass").asFunction();
+    setAllMessageColors.invoke(getJsObject(), String.format(USER_CSS_CLASS_FORMAT, player.getUsername()), cssClass);
   }
 
   private void updateUserMessageDisplay(Player player, String display) {
-    Platform.runLater(() -> getJsObject().call("updateUserMessageDisplay", player.getUsername(), display));
+    JSFunction setAllMessageColors = getJsObject().getProperty("updateUserMessageDisplay").asFunction();
+    setAllMessageColors.invoke(getJsObject(), player.getUsername(), display);
   }
 
   private synchronized void onUserJoinedChannel(ChatUser chatUser) {
@@ -571,9 +573,11 @@ public class ChannelTabController extends AbstractChatTabController {
   private void addSearchFieldListener() {
     searchField.textProperty().addListener((observable, oldValue, newValue) -> {
       if (newValue.trim().isEmpty()) {
-        getJsObject().call("removeHighlight");
+        JSFunction setAllMessageColors = getJsObject().getProperty("removeHighlight").asFunction();
+        setAllMessageColors.invoke(getJsObject());
       } else {
-        getJsObject().call("highlightText", newValue);
+        JSFunction setAllMessageColors = getJsObject().getProperty("highlightText").asFunction();
+        setAllMessageColors.invoke(getJsObject());
       }
     });
   }

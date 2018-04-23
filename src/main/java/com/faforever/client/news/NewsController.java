@@ -7,13 +7,15 @@ import com.faforever.client.main.event.NavigateEvent;
 import com.faforever.client.main.event.ShowLadderMapsEvent;
 import com.faforever.client.preferences.PreferencesService;
 import com.faforever.client.theme.UiService;
+import com.faforever.client.util.JxBrowserUtil;
 import com.google.common.eventbus.EventBus;
 import com.google.common.io.CharStreams;
-import javafx.event.ActionEvent;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
-import javafx.scene.web.WebView;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ClassPathResource;
@@ -27,6 +29,7 @@ import java.util.List;
 
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Slf4j
 public class NewsController extends AbstractViewController<Node> {
 
   private static final ClassPathResource NEWS_DETAIL_HTML_RESOURCE = new ClassPathResource("/theme/news_detail.html");
@@ -38,7 +41,7 @@ public class NewsController extends AbstractViewController<Node> {
   private final WebViewConfigurer webViewConfigurer;
   public Pane newsRoot;
   public Pane newsListPane;
-  public WebView newsDetailWebView;
+  public BrowserView newsDetailWebView;
   public Button showLadderMapsButton;
 
   @Inject
@@ -52,14 +55,18 @@ public class NewsController extends AbstractViewController<Node> {
   }
 
   @Override
+  public void initialize() {
+    super.initialize();
+    webViewConfigurer.configureWebView(newsDetailWebView, log);
+  }
+
+  @Override
   public void onDisplay(NavigateEvent navigateEvent) {
     if (!newsListPane.getChildren().isEmpty()) {
       return;
     }
     showLadderMapsButton.managedProperty().bind(showLadderMapsButton.visibleProperty());
     showLadderMapsButton.setVisible(false);
-    newsDetailWebView.setContextMenuEnabled(false);
-    webViewConfigurer.configureWebView(newsDetailWebView);
 
     boolean firstItemSelected = false;
 
@@ -89,13 +96,11 @@ public class NewsController extends AbstractViewController<Node> {
     eventBus.post(new UnreadNewsEvent(false));
 
     try (Reader reader = new InputStreamReader(NEWS_DETAIL_HTML_RESOURCE.getInputStream())) {
-      String html = CharStreams.toString(reader);
-
-      html = html.replace("{title}", newsItem.getTitle())
+      String html = CharStreams.toString(reader).replace("{title}", newsItem.getTitle())
           .replace("{content}", newsItem.getContent())
           .replace("{authored}", i18n.get("news.authoredFormat", newsItem.getAuthor(), newsItem.getDate()));
 
-      newsDetailWebView.getEngine().loadContent(html);
+      Platform.runLater(() -> JxBrowserUtil.setContent(html, preferencesService.getCacheDirectory(), newsDetailWebView.getBrowser()));
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -105,7 +110,7 @@ public class NewsController extends AbstractViewController<Node> {
     return newsRoot;
   }
 
-  public void showLadderMaps(ActionEvent actionEvent) {
+  public void showLadderMaps() {
     eventBus.post(new ShowLadderMapsEvent());
   }
 }

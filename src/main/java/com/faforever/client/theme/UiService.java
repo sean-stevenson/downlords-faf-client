@@ -1,10 +1,10 @@
 package com.faforever.client.theme;
 
 import com.faforever.client.fx.Controller;
+import com.teamdev.jxbrowser.chromium.javafx.BrowserView;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.web.WebView;
 
 import java.net.URL;
 import java.util.Collection;
@@ -69,9 +69,9 @@ public interface UiService {
   String[] getStylesheets();
 
   /**
-   * Registers a WebView against the theme service so it can be updated whenever the theme changes.
+   * Registers a BrowserView against the theme service so it can be updated whenever the theme changes.
    */
-  void registerWebView(WebView webView);
+  void registerBrowserView(BrowserView browserView);
 
   void loadThemes();
 
