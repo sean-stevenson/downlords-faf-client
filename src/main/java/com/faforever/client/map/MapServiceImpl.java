@@ -238,10 +238,15 @@ public class MapServiceImpl implements MapService {
       mapBean.setFolderName(mapFolder.getFileName().toString());
       mapBean.setDisplayName(scenarioInfo.get("name").toString());
       mapBean.setDescription(FaStrings.removeLocalizationTag(scenarioInfo.get("description").toString()));
-      mapBean.setVersion(new ComparableVersion(scenarioInfo.get("map_version").toString()));
       mapBean.setType(Type.fromString(scenarioInfo.get("type").toString()));
       mapBean.setSize(MapSize.valueOf(size.get(1).toint(), size.get(2).toint()));
       mapBean.setPlayers(scenarioInfo.get("Configurations").get("standard").get("teams").get(1).get("armies").length());
+
+      LuaValue mapVersion = scenarioInfo.get("map_version");
+      if (!mapVersion.isnil()) {
+        mapBean.setVersion(new ComparableVersion(mapVersion.toString()));
+      }
+
       return mapBean;
     } catch (LuaError e) {
       throw new MapLoadException(e);

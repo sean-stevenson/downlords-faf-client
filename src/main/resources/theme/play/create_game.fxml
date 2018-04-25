@@ -27,7 +27,7 @@
         <RowConstraints vgrow="NEVER"/>
         <RowConstraints minHeight="10.0" vgrow="NEVER"/>
         <RowConstraints vgrow="NEVER"/>
-        <RowConstraints vgrow="NEVER"/>
+        <RowConstraints fillHeight="false" valignment="BOTTOM" vgrow="NEVER"/>
         <RowConstraints vgrow="NEVER"/>
         <RowConstraints minHeight="10.0"/>
         <RowConstraints vgrow="ALWAYS"/>

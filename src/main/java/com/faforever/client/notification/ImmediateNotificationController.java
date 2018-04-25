@@ -107,7 +107,7 @@ public class ImmediateNotificationController implements Controller<Node> {
     return this;
   }
 
-  public Region getJfxDialogLayout() {
+  public JFXDialogLayout getJfxDialogLayout() {
     return dialogLayout;
   }
 }

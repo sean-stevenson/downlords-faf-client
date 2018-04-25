@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
@@ -7,7 +8,6 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.chart.StackedBarChart?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
@@ -224,7 +224,7 @@
                          maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
                          text="%achievements.loading" VBox.vgrow="ALWAYS">
                   <graphic>
-                      <ProgressIndicator prefHeight="50.0" prefWidth="50.0"/>
+                      <JFXSpinner prefHeight="50.0" prefWidth="50.0"/>
                   </graphic>
                 </Label>
                   <ScrollPane fx:id="achievementsPane" fitToWidth="true" maxHeight="1.7976931348623157E308"

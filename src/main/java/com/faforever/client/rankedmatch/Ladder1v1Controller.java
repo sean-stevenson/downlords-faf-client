@@ -253,7 +253,8 @@ public class Ladder1v1Controller extends AbstractViewController<Node> {
       gamesPlayedLabel.setText(String.format("%d", leaderboardEntryBean.getGamesPlayed()));
       winLossRationLabel.setText(i18n.get("percentage", leaderboardEntryBean.getWinLossRatio() * 100));
     })).exceptionally(throwable -> {
-      logger.warn("Leaderboard entry could not be read for current player: " + currentPlayer.getUsername(), throwable);
+      // Debug instead of warn, since it's fairly common that players don't have a leaderboard entry which causes a 404
+      logger.debug("Leaderboard entry could not be read for current player: " + currentPlayer.getUsername(), throwable);
       return null;
     });
   }

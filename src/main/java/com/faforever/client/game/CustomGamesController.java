@@ -23,7 +23,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
@@ -79,7 +79,7 @@ public class CustomGamesController extends AbstractViewController<Node> {
   public Pane gameViewContainer;
   public StackPane gamesRoot;
   public ScrollPane gameDetailPane;
-  public ChoiceBox<TilesSortingOrder> chooseSortingTypeChoiceBox;
+  public ComboBox<TilesSortingOrder> chooseSortingTypeChoiceBox;
 
   @VisibleForTesting
   FilteredList<Game> filteredItems;

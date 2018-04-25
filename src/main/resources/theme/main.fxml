@@ -65,19 +65,15 @@
                         <Pane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
                         <StackPane>
                             <children>
-                                <JFXButton contentDisplay="CENTER" focusTraversable="false" mnemonicParsing="false"
-                                           onAction="#onNotificationsButtonClicked"
-                                           styleClass="icon-button,notification-button" text=""/>
+                                <JFXButton contentDisplay="CENTER" styleClass="icon-button" text=""
+                                           onAction="#onNotificationsButtonClicked"/>
                                 <Label fx:id="notificationsBadge" alignment="CENTER" mouseTransparent="true"
                                        styleClass="notification-badge" text="3" StackPane.alignment="TOP_RIGHT">
                                     <StackPane.margin>
-                                        <Insets left="20.0" top="10.0"/>
+                                        <Insets right="5.0" top="5.0"/>
                                     </StackPane.margin>
                                 </Label>
                             </children>
-                            <padding>
-                                <Insets right="20.0"/>
-                            </padding>
                         </StackPane>
                         <fx:include source="user_button.fxml"/>
                     </children>

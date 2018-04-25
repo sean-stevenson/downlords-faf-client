@@ -77,6 +77,7 @@ public class FafApiAccessorImpl implements FafApiAccessor {
 
   private static final String MAP_ENDPOINT = "/data/map";
   private static final String REPLAY_INCLUDES = "featuredMod,playerStats,playerStats.player,reviews,reviews.player,mapVersion,mapVersion.map,mapVersion.reviews,reviewsSummary";
+  private static final String COOP_RESULT_INCLUDES = "game.playerStats.player";
   private static final String PLAYER_INCLUDES = "globalRating,ladder1v1Rating,names";
   private static final String MOD_ENDPOINT = "/data/mod";
   private static final String OAUTH_TOKEN_PATH = "/oauth/token";
@@ -447,8 +448,10 @@ public class FafApiAccessorImpl implements FafApiAccessor {
   @Cacheable(CacheNames.COOP_LEADERBOARD)
   public List<CoopResult> getCoopLeaderboard(String missionId, int numberOfPlayers) {
     return getMany("/data/coopResult", 1000, ImmutableMap.of(
-        "filter", rsql(qBuilder().intNum("playerCount").eq(numberOfPlayers)),
-        "sort", "-duration"
+        "filter", rsql(qBuilder().intNum("playerCount").eq(numberOfPlayers)
+            .and().string("mission").eq(missionId)),
+        "include", COOP_RESULT_INCLUDES,
+        "sort", "duration"
     ));
   }
 

@@ -3,7 +3,6 @@ package com.faforever.client.preferences.ui;
 import com.faforever.client.i18n.I18n;
 import com.faforever.client.notification.NotificationService;
 import com.faforever.client.notification.PersistentNotification;
-import com.faforever.client.preferences.LanguageInfo;
 import com.faforever.client.preferences.Preferences;
 import com.faforever.client.preferences.PreferencesService;
 import com.faforever.client.preferences.TimeInfo;
@@ -46,7 +45,7 @@ public class SettingsControllerTest extends AbstractPlainJavaFxTest {
     when(preferenceService.getPreferences()).thenReturn(preferences);
     when(uiService.currentThemeProperty()).thenReturn(new SimpleObjectProperty<>());
 
-    instance = new SettingsController(userService, preferenceService, uiService, i18n, eventBus, notificationService);
+    instance = new SettingsController(userService, preferenceService, uiService, i18n, eventBus, notificationService, platformService, clientProperties);
     loadFxml("theme/settings/settings.fxml", param -> instance);
   }
 

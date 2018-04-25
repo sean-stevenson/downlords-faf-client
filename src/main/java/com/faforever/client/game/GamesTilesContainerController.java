@@ -15,7 +15,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.WeakListChangeListener;
 import javafx.scene.Node;
-import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.FlowPane;
 import lombok.Getter;
@@ -85,7 +85,7 @@ public class GamesTilesContainerController implements Controller<Node> {
   }
 
   @VisibleForTesting
-  void createTiledFlowPane(ObservableList<Game> games, ChoiceBox<TilesSortingOrder> choseSortingTypeChoiceBox) {
+  void createTiledFlowPane(ObservableList<Game> games, ComboBox<TilesSortingOrder> choseSortingTypeChoiceBox) {
     initializeChoiceBox(choseSortingTypeChoiceBox);
     uidToGameCard = new HashMap<>();
     games.forEach(this::addGameCard);
@@ -94,7 +94,7 @@ public class GamesTilesContainerController implements Controller<Node> {
     sortNodes();
   }
 
-  private void initializeChoiceBox(ChoiceBox<TilesSortingOrder> sortingTypeChoiceBox) {
+  private void initializeChoiceBox(ComboBox<TilesSortingOrder> sortingTypeChoiceBox) {
     sortingTypeChoiceBox.setVisible(true);
     sortingTypeChoiceBox.getItems().addAll(TilesSortingOrder.values());
     sortingTypeChoiceBox.getSelectionModel().selectedItemProperty().addListener(new WeakChangeListener<>(sortingListener));

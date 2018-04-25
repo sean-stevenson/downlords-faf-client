@@ -167,6 +167,28 @@
  *                                                                             *
  ******************************************************************************/
 
+.button {
+  -fx-pref-height: 36px;
+  -fx-background-color: #FFFFFF11;
+}
+
+.button:hover {
+  -fx-background-color: #FFFFFF33;
+}
+
+.button:default,
+.button-raised {
+  -fx-padding: 0.7em 1em;
+  -fx-font-size: 14px;
+  -jfx-button-type: RAISED;
+  -fx-background-color: white;
+}
+
+.button:default:hover,
+.button-raised:hover {
+  -fx-background-color: -grey-200;
+}
+
 .toggle-button {
   -fx-color: transparent;
   -fx-background-color: -fx-color;
@@ -179,8 +201,12 @@
 }
 
 .icon-button {
-  -fx-color: transparent;
   -fx-text-overrun: clip;
+  -fx-background-color: transparent;
+  -fx-background-radius: 3em;
+  -fx-pref-width: 3em;
+  -fx-pref-height: 3em;
+  -fx-cursor: hand;
 }
 
 .icon-button > .text {
@@ -190,12 +216,12 @@
 }
 
 .icon-button:hover {
-  -fx-color: -grey-800;
+  -fx-background-color: transparent;
 }
 
 /*******************************************************************************
  *                                                                             *
- * WebView                  			  				                     *
+ * WebView                  			  				                                   *
  *                                                                             *
  ******************************************************************************/
 
@@ -225,6 +251,10 @@
 
 .label:show-mnemonics > .mnemonic-underline {
   -fx-stroke: -fx-text-base-color;
+}
+
+.label.bold {
+  -fx-font-weight: bold;
 }
 
 /*******************************************************************************
@@ -330,6 +360,10 @@
 
 .button.icon.medium {
   -fx-padding: 0.2em 0.6em 0.2em 0.6em;
+}
+
+.checked-icon {
+  -fx-text-fill: -fx-accent;
 }
 
 /***************** Popup *****************/
@@ -533,10 +567,7 @@
 /***************** Generic View Content *****************/
 
 .view-content {
-  -fx-padding: 1.5em;
-}
-
-.view-content * {
+  -fx-padding: 0 1.5em;
   -fx-spacing: 10px;
   -fx-hgap: 10px;
   -fx-vgap: 10px;
@@ -546,10 +577,12 @@
 
 .h1 {
   -fx-font-size: 32px;
+  -fx-padding: 0 0 0.5em 0;
 }
 
 .h2 {
   -fx-font-size: 24px;
+  -fx-padding: 0 0 0.5em 0;
 }
 
 .h3 {
@@ -679,6 +712,7 @@
   -fx-padding: 10 20;
   -fx-border-width: 0 0 2 0;
   -fx-border-color: transparent;
+  -fx-max-height: Infinity;
 }
 
 .main-navigation-button:highlighted {
@@ -746,15 +780,17 @@
 
 .news-item-authored {
   -fx-font-size: 0.8em;
+  -fx-text-fill: -fx-mid-text-color;
 }
 
 /***************** Notification Badge *****************/
 
 .notification-badge {
   -fx-padding: 0 2;
-  -fx-background-radius: 1em;
-  -fx-min-width: 1em;
-  -fx-min-height: 1em;
+  -fx-background-radius: 1.5em;
+  -fx-pref-width: 1.5em;
+  -fx-pref-height: 1.5em;
+  -fx-background-color: -fx-accent;
 }
 
 .notification-badge:info {
@@ -778,7 +814,7 @@
 .notification-button {
 }
 
-/***************** Create preferences *****************/
+/***************** Create game *****************/
 
 .game-title-input {
   -fx-font-size: 2em;
@@ -901,7 +937,8 @@
   -fx-effect: dropshadow(gaussian, black, 5, 0.5, 0, 0);
 }
 
-/*****************Rating change*****************/
+/***************** Rating change*****************/
+
 .rating-change-label {
   -fx-font-size: 9px;
 }
@@ -990,18 +1027,6 @@
   -fx-background-color: REVIEW_SCORE_1;
 }
 
-.button {
-  -fx-background-color: #FFFFFF33;
-}
-
-.button:default,
-.button-raised {
-  -fx-padding: 0.7em 1em;
-  -fx-font-size: 14px;
-  -jfx-button-type: RAISED;
-  -fx-background-color: white;
-}
-
 /***************** Cards *****************/
 
 .card {
@@ -1012,7 +1037,7 @@
 }
 
 .card-dimmer {
-  -fx-min-height: 96;
+  -fx-min-height: 112;
   -fx-padding: 0 10 10 10;
   -fx-background-color: linear-gradient(#00000000, #000000ff);
 }
@@ -1049,4 +1074,8 @@
 .card.hoverable:hover .card-dimmer,
 .card.pointable:hover .card-dimmer {
   -fx-background-color: linear-gradient(#33333300, #333333ff);
+}
+
+.card:selected {
+
 }

@@ -41,6 +41,7 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
+import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +109,8 @@ public class CreateGameController implements Controller<Pane> {
   }
 
   public void initialize() {
+    versionLabel.managedProperty().bind(versionLabel.visibleProperty());
+
     mapPreviewPane.prefHeightProperty().bind(mapPreviewPane.widthProperty());
     mapSearchTextField.textProperty().addListener((observable, oldValue, newValue) -> {
       if (newValue.isEmpty()) {
@@ -237,14 +240,20 @@ public class CreateGameController implements Controller<Pane> {
         new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false))));
 
     MapSize mapSize = newValue.getSize();
-    mapSizeLabel.setText(i18n.get("mapPreview.size", mapSize.getWidthInPixels(), mapSize.getHeightInPixels()));
+    mapSizeLabel.setText(i18n.get("mapPreview.size", mapSize.getWidthInKm(), mapSize.getHeightInKm()));
     mapNameLabel.setText(newValue.getDisplayName());
     mapPlayersLabel.setText(i18n.number(newValue.getPlayers()));
     mapDescriptionLabel.setText(Optional.ofNullable(newValue.getDescription())
         .map(Strings::emptyToNull)
         .map(FaStrings::removeLocalizationTag)
         .orElseGet(() -> i18n.get("map.noDescriptionAvailable")));
-    versionLabel.setText(newValue.getVersion().toString());
+
+    ComparableVersion mapVersion = newValue.getVersion();
+    if (mapVersion == null) {
+      versionLabel.setVisible(false);
+    } else {
+      versionLabel.setText(i18n.get("map.versionFormat", mapVersion));
+    }
   }
 
   private void initFeaturedModList() {

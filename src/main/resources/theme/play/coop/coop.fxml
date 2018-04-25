@@ -19,7 +19,7 @@
 <?import javafx.scene.web.WebView?>
 <?import java.lang.Integer?>
 <GridPane xmlns:fx="http://javafx.com/fxml/1" fx:id="coopRoot" hgap="20.0" maxHeight="1.7976931348623157E308"
-          maxWidth="1.7976931348623157E308" vgap="20.0" xmlns="http://javafx.com/javafx/8"
+          maxWidth="1.7976931348623157E308" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.141"
           fx:controller="com.faforever.client.coop.CoopController">
     <columnConstraints>
         <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
@@ -56,7 +56,8 @@
         <Separator prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="2" />
         <TableView fx:id="leaderboardTable" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2" GridPane.rowIndex="4">
             <columns>
-                <TableColumn fx:id="rankColumn" editable="false" maxWidth="32.0" minWidth="24.0" prefWidth="32.0" sortable="false" text="%coop.leaderboard.rank" />
+                <TableColumn fx:id="rankColumn" editable="false" maxWidth="64.0" minWidth="24.0" prefWidth="32.0"
+                             sortable="false" text="%coop.leaderboard.rank"/>
                 <TableColumn fx:id="playerCountColumn" editable="false" maxWidth="1000.0" minWidth="24.0" prefWidth="50.0" sortable="false" text="%coop.leaderboard.players" />
                 <TableColumn fx:id="playerNamesColumn" editable="false" minWidth="24.0" prefWidth="-1.0" sortable="false" text="%coop.leaderboard.names" />
                 <TableColumn fx:id="secondaryObjectivesColumn" editable="false" maxWidth="1000.0" minWidth="24.0" prefWidth="-1.0" sortable="false" text="%coop.leaderboard.secondary" />
