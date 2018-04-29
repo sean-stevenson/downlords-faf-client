@@ -18,6 +18,7 @@ import com.faforever.client.theme.UiService;
 import com.faforever.client.ui.StageHolder;
 import com.faforever.client.util.TimeService;
 import com.google.common.eventbus.EventBus;
+import com.neovisionaries.i18n.CountryCode;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.WeakInvalidationListener;
@@ -48,6 +49,7 @@ import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.time.Duration;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -267,10 +269,13 @@ public class ChatUserItemController implements Controller<Node> {
 
     countryImageView.setVisible(true);
 
-    Tooltip countryTooltip = new Tooltip(player.getCountry());
-    countryTooltip.textProperty().bind(player.countryProperty());
-
-    Tooltip.install(countryImageView, countryTooltip);
+    final CountryCode countryCode = CountryCode.getByCode(player.getCountry()); //country could be invalid
+    if (countryCode != null) {
+      final Locale countryLocale = new Locale("", player.getCountry());
+      final Tooltip countryTooltip = new Tooltip(countryLocale.getDisplayCountry(i18n.getUserSpecificLocale()));
+      //countryTooltip.textProperty().bind(player.countryNameProperty());
+      Tooltip.install(countryImageView, countryTooltip);
+    }
   }
 
   private void configureAvatarImageView() {
