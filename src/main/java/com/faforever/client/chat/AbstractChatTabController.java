@@ -480,7 +480,7 @@ public abstract class AbstractChatTabController implements Controller<Tab> {
   }
 
   /**
-   * Called from JavaScript when user no longer hovers over a user name.
+   * Called from JavaScript when user no longer hovers over a country flag.
    */
   public void hideCountryInfo() {
     if (countryInfoPopup == null) {
