@@ -63,6 +63,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -233,12 +234,14 @@ public class UserInfoWindowController implements Controller<Node> {
 
     updateNameHistory(player);
 
+    //country (code) could be invalid - NULL or from GeoIP like A1 or A2
     CountryCode countryCode = CountryCode.getByCode(player.getCountry());
-    if (countryCode != null) {
-      // Country code is unknown to CountryCode, like A1 or A2 (from GeoIP)
-      countryLabel.setText(countryCode.getName());
-    } else {
+    if (countryCode == null) {
       countryLabel.setText(player.getCountry());
+    } else {
+      final Locale countryLocale = new Locale("", player.getCountry());
+      final String countryNameLocalized = countryLocale.getDisplayCountry(i18n.getUserSpecificLocale());
+      countryLabel.setText(countryNameLocalized);
     }
 
     globalButton.fire();
