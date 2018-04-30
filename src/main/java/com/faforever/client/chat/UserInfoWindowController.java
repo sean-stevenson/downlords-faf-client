@@ -234,15 +234,7 @@ public class UserInfoWindowController implements Controller<Node> {
 
     updateNameHistory(player);
 
-    //country (code) could be invalid - NULL or from GeoIP like A1 or A2
-    CountryCode countryCode = CountryCode.getByCode(player.getCountry());
-    if (countryCode == null) {
-      countryLabel.setText(player.getCountry());
-    } else {
-      final Locale countryLocale = new Locale("", player.getCountry());
-      final String countryNameLocalized = countryLocale.getDisplayCountry(i18n.getUserSpecificLocale());
-      countryLabel.setText(countryNameLocalized);
-    }
+    countryLabel.setText(i18n.getCountryNameLocalized(player.getCountry()));
 
     globalButton.fire();
     globalButton.setSelected(true);

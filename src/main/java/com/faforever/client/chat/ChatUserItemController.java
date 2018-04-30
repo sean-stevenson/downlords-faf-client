@@ -269,12 +269,9 @@ public class ChatUserItemController implements Controller<Node> {
 
     countryImageView.setVisible(true);
 
-    //country (code) could be invalid - NULL or from GeoIP like A1 or A2
-    final CountryCode countryCode = CountryCode.getByCode(player.getCountry()); //country could be invalid
-    if (countryCode != null) {
-      final String countryNameLocalized = new Locale("", player.getCountry()).getDisplayCountry(i18n.getUserSpecificLocale());
-      final Tooltip countryTooltip = new Tooltip(countryNameLocalized);
-      //countryTooltip.textProperty().bind(player.countryNameProperty());
+    if (!StringUtils.isEmpty(player.getCountry())) {
+      final Tooltip countryTooltip = new Tooltip(i18n.getCountryNameLocalized(player.getCountry()));
+      //countryTooltip.textProperty().bind(player.countryProperty());
       Tooltip.install(countryImageView, countryTooltip);
     }
   }
