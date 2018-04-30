@@ -18,7 +18,6 @@ import com.faforever.client.theme.UiService;
 import com.faforever.client.ui.StageHolder;
 import com.faforever.client.util.TimeService;
 import com.google.common.eventbus.EventBus;
-import com.neovisionaries.i18n.CountryCode;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.WeakInvalidationListener;
@@ -49,7 +48,6 @@ import org.springframework.util.StringUtils;
 
 import javax.inject.Inject;
 import java.time.Duration;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
